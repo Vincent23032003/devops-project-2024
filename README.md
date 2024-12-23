@@ -116,6 +116,24 @@ Pour lancer l'application en mode développement :
 npm run dev
 ```
 
+## Déploiement
+
+L'application est déployée sur Heroku et accessible à l'adresse suivante :
+- [https://devops-userapi-2024-671a8bceceee.herokuapp.com/](https://devops-userapi-2024-671a8bceceee.herokuapp.com/)
+
+### Endpoints disponibles
+
+- `/` - Page d'accueil
+- `/health` - Endpoint de santé
+- `/users` - API utilisateurs (désactivée en production)
+
+### État du déploiement
+
+- ✅ Application web Node.js/Express
+- ✅ Tests unitaires et d'intégration
+- ✅ Déploiement continu sur Heroku
+- ✅ Health check endpoint
+
 ## API Endpoints
 
 ### Health Check
