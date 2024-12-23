@@ -14,34 +14,34 @@ L'application elle-même est une API de gestion d'utilisateurs permettant les op
 ## État d'Avancement du Projet
 
 ### 1. Application Web
-- API CRUD pour les utilisateurs
-- Stockage dans Redis
-- Tests (unit, API, configuration, connection)
-- Endpoint health check
+✅ API CRUD pour les utilisateurs
+✅ Stockage dans Redis
+✅ Tests (unit, API, configuration, connection)
+✅ Endpoint health check
 
 ### 2. Pipeline CI/CD
-- Configuration avec GitHub Actions
-- Tests automatisés
-- Déploiement configuré
+✅ Configuration avec GitHub Actions
+✅ Tests automatisés
+✅ Déploiement configuré
 
 ### 3. Infrastructure as Code
-- Configuration Vagrant (1 VM Linux)
-- Provisioning avec Ansible (installation de runtime, DB, application)
+✅ Configuration Vagrant (1 VM Linux)
+✅ Provisioning avec Ansible (installation de runtime, DB, application)
 
 ### 4. Docker
-- Création du Dockerfile
-- Push sur Docker Hub
+⏳ Création du Dockerfile
+⏳ Push sur Docker Hub
 
 ### 5. Docker Compose
-- Création du docker-compose.yml
+⏳ Création du docker-compose.yml
 
 ### 6. Kubernetes
-- Installation de Minikube
-- Création des manifests YAML (deployments, services, volumes)
+⏳ Installation de Minikube
+⏳ Création des manifests YAML (deployments, services, volumes)
 
 ### 7. Service Mesh avec Istio
-- Déploiement avec Istio
-- Configuration du routing et traffic shifting
+⏳ Déploiement avec Istio
+⏳ Configuration du routing et traffic shifting
 
 ## Travail Réalisé
 
