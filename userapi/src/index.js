@@ -8,23 +8,35 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Création et configuration du client Redis
-const redisClient = createClient({
-  url: 'redis://127.0.0.1:6379', 
-});
+let redisClient = null;
+if (process.env.NODE_ENV !== 'production') {
+  redisClient = createClient({
+    url: 'redis://127.0.0.1:6379', 
+  });
 
-// Gestion des erreurs Redis
-redisClient.on('error', (err) => {
-  console.error('Redis Client Error:', err);
-});
+  // Gestion des erreurs Redis
+  redisClient.on('error', (err) => {
+    console.error('Redis Client Error:', err);
+  });
 
-// Connexion à Redis
-redisClient.connect()
-  .then(() => console.log('Connected to Redis'))
-  .catch((err) => console.error('Could not connect to Redis:', err));
+  // Connexion à Redis
+  redisClient.connect()
+    .then(() => console.log('Connected to Redis'))
+    .catch((err) => console.error('Could not connect to Redis:', err));
+}
 
 // Endpoint santé
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'UP' });
+});
+
+// Page d'accueil
+app.get('/', (req, res) => {
+  res.status(200).json({ 
+    message: 'Welcome to UserAPI',
+    environment: process.env.NODE_ENV || 'development',
+    redis_status: redisClient ? 'connected' : 'disabled'
+  });
 });
 
 // CRUD : Create (ajouter un utilisateur)
@@ -34,7 +46,9 @@ app.post('/users', async (req, res) => {
     return res.status(400).json({ message: 'id, name, and email are required' });
   }
   try {
-    await redisClient.hSet(`user:${id}`, { name, email });
+    if (redisClient) {
+      await redisClient.hSet(`user:${id}`, { name, email });
+    }
     res.status(201).json({ message: 'User created', user: { id, name, email } });
   } catch (err) {
     console.error('Error creating user:', err);
@@ -46,11 +60,15 @@ app.post('/users', async (req, res) => {
 app.get('/users/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const user = await redisClient.hGetAll(`user:${id}`);
-    if (Object.keys(user).length === 0) {
-      return res.status(404).json({ message: `User with id ${id} not found` });
+    if (redisClient) {
+      const user = await redisClient.hGetAll(`user:${id}`);
+      if (Object.keys(user).length === 0) {
+        return res.status(404).json({ message: `User with id ${id} not found` });
+      }
+      res.status(200).json({ id, ...user });
+    } else {
+      res.status(404).json({ message: `User with id ${id} not found` });
     }
-    res.status(200).json({ id, ...user });
   } catch (err) {
     console.error('Error retrieving user:', err);
     res.status(500).json({ message: 'Internal server error' });
@@ -65,13 +83,17 @@ app.put('/users/:id', async (req, res) => {
     return res.status(400).json({ message: 'At least one of name or email is required' });
   }
   try {
-    const userExists = await redisClient.exists(`user:${id}`);
-    if (!userExists) {
-      return res.status(404).json({ message: `User with id ${id} not found` });
+    if (redisClient) {
+      const userExists = await redisClient.exists(`user:${id}`);
+      if (!userExists) {
+        return res.status(404).json({ message: `User with id ${id} not found` });
+      }
+      const updatedUser = { ...(name && { name }), ...(email && { email }) };
+      await redisClient.hSet(`user:${id}`, updatedUser);
+      res.status(200).json({ message: 'User updated', user: { id, ...updatedUser } });
+    } else {
+      res.status(404).json({ message: `User with id ${id} not found` });
     }
-    const updatedUser = { ...(name && { name }), ...(email && { email }) };
-    await redisClient.hSet(`user:${id}`, updatedUser);
-    res.status(200).json({ message: 'User updated', user: { id, ...updatedUser } });
   } catch (err) {
     console.error('Error updating user:', err);
     res.status(500).json({ message: 'Internal server error' });
@@ -82,11 +104,15 @@ app.put('/users/:id', async (req, res) => {
 app.delete('/users/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await redisClient.del(`user:${id}`);
-    if (result === 0) {
-      return res.status(404).json({ message: `User with id ${id} not found` });
+    if (redisClient) {
+      const result = await redisClient.del(`user:${id}`);
+      if (result === 0) {
+        return res.status(404).json({ message: `User with id ${id} not found` });
+      }
+      res.status(200).json({ message: `User with id ${id} deleted` });
+    } else {
+      res.status(404).json({ message: `User with id ${id} not found` });
     }
-    res.status(200).json({ message: `User with id ${id} deleted` });
   } catch (err) {
     console.error('Error deleting user:', err);
     res.status(500).json({ message: 'Internal server error' });
