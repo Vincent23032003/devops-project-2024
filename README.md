@@ -1,7 +1,47 @@
 # Projet DevOps 2024
 
 ## Description du Projet
-Ce projet est réalisé dans le cadre du cours DevOps. Il s'agit d'une application web implémentant une API de gestion d'utilisateurs avec les fonctionnalités CRUD (Create, Read, Update, Delete), développée en Node.js et utilisant Redis comme base de données.
+Ce projet s'inscrit dans le cadre du cours DevOps à l'école ESIEA. L'objectif est de mettre en place une application web moderne en suivant les meilleures pratiques DevOps, notamment :
+
+- **Développement** : Application Node.js/Express avec API REST et base de données Redis
+- **Qualité** : Tests automatisés, intégration continue
+- **Déploiement** : Conteneurisation avec Docker, orchestration avec Kubernetes
+- **Infrastructure** : Infrastructure as Code avec Vagrant et Ansible
+- **Monitoring** : Service Mesh avec Istio pour la gestion du trafic et la résilience
+
+L'application elle-même est une API de gestion d'utilisateurs permettant les opérations CRUD (Create, Read, Update, Delete), servant de support pour démontrer l'ensemble de la chaîne DevOps, du développement à la production.
+
+## État d'Avancement du Projet
+
+### ✅ 1. Application Web
+- ✅ API CRUD pour les utilisateurs
+- ✅ Stockage dans Redis
+- ✅ Tests (unit, API, configuration, connection)
+- ✅ Endpoint health check
+
+### ✅ 2. Pipeline CI/CD
+- ✅ Configuration avec GitHub Actions
+- ✅ Tests automatisés
+- ✅ Déploiement configuré
+
+### ❌ 3. Infrastructure as Code
+- ❌ Configuration Vagrant (1 VM Linux)
+- ❌ Provisioning avec Ansible (installation de runtime, DB, application)
+
+### ❌ 4. Docker
+- ❌ Création du Dockerfile
+- ❌ Push sur Docker Hub
+
+### ❌ 5. Docker Compose
+- ❌ Création du docker-compose.yml
+
+### ❌ 6. Kubernetes
+- ❌ Installation de Minikube
+- ❌ Création des manifests YAML (deployments, services, volumes)
+
+### ❌ 7. Service Mesh avec Istio
+- ❌ Déploiement avec Istio
+- ❌ Configuration du routing et traffic shifting
 
 ## Travail Réalisé
 
@@ -96,9 +136,3 @@ npm run dev
 - Vincent BARÉ
 - Louis DECOURTIS
 - Quentin CARMINOT
-
-## Prochaines Étapes
-- [ ] Configuration Docker et Docker Compose
-- [ ] Infrastructure as Code avec Ansible
-- [ ] Orchestration avec Kubernetes
-- [ ] Service Mesh avec Istio
