@@ -121,74 +121,91 @@ vagrant destroy # Supprimer la VM
 #### Tests Unitaires et d'Intégration
 ![Tests Réussis](image/1-app-web/npm_test.png)
 
-*Exécution réussie de tous les tests unitaires et d'intégration, incluant les tests Redis et API*
+*✅ Exécution réussie de tous les tests unitaires et d'intégration*
 
-#### API Endpoints
+#### API Endpoints - Opérations CRUD
+
+<details>
+<summary>💡 Voir toutes les opérations CRUD</summary>
+
+| Opération | Endpoint | Description | Capture d'écran |
+|-----------|----------|-------------|-----------------|
+| **CREATE** | `POST /users` | Création d'un utilisateur | ![Création](image/1-app-web/api_create.png) |
+| **READ** | `GET /users/:id` | Lecture des détails | ![Lecture](image/1-app-web/api_get.png) |
+| **UPDATE** | `PUT /users/:id` | Mise à jour des informations | ![Mise à jour](image/1-app-web/api_update.png) |
+| **DELETE** | `DELETE /users/:id` | Suppression d'un utilisateur | ![Suppression](image/1-app-web/api_delete.png) |
+
+##### Exemples de commandes
+
+<details>
+<summary>📝 Création d'un utilisateur</summary>
+
+```bash
+curl -X POST http://localhost:3000/users \
+     -H "Content-Type: application/json" \
+     -d '{"id":"1","name":"test","email":"test@test.com"}'
+```
+</details>
+
+<details>
+<summary>🔍 Lecture d'un utilisateur</summary>
+
+```bash
+curl http://localhost:3000/users/1
+```
+</details>
+
+<details>
+<summary>✏️ Mise à jour d'un utilisateur</summary>
+
+```bash
+curl -X PUT http://localhost:3000/users/1 \
+     -H "Content-Type: application/json" \
+     -d '{"name":"updated test"}'
+```
+</details>
+
+<details>
+<summary>🗑️ Suppression d'un utilisateur</summary>
+
+```bash
+curl -X DELETE http://localhost:3000/users/1
+```
+</details>
+
+</details>
+
+#### Health Check
 ![Health Check](image/1-app-web/health_check.png)
 
-*L'endpoint de santé /health confirme que l'application est opérationnelle*
-
-#### Opérations CRUD sur les Utilisateurs
-1. Création d'un utilisateur :
-![Création Utilisateur](image/1-app-web/api_create.png)
-
-*POST /users - Création réussie d'un nouvel utilisateur avec ID, nom et email*
-
-2. Lecture d'un utilisateur :
-![Lecture Utilisateur](image/1-app-web/api_get.png)
-
-*GET /users/:id - Récupération des détails d'un utilisateur existant*
-
-3. Mise à jour d'un utilisateur :
-![Mise à jour Utilisateur](image/1-app-web/api_update.png)
-
-*PUT /users/:id - Mise à jour des informations d'un utilisateur*
-
-4. Suppression d'un utilisateur :
-![Suppression Utilisateur](image/1-app-web/api_delete.png)
-
-*DELETE /users/:id - Suppression réussie d'un utilisateur*
+*✅ L'endpoint `/health` confirme que l'application est opérationnelle*
 
 ### 2. Pipeline CI/CD (CICD +3)
 
-#### GitHub Actions
-![GitHub Actions](image/2-ci-cd/github_actions.png)
-
-*Pipeline d'intégration continue exécutant les tests et le build automatiquement*
-
-#### Déploiement Heroku
-![Heroku Deployment](image/2-ci-cd/heroku_deployment.png)
-
-*Déploiement continu réussi sur la plateforme Heroku*
+| Étape | Description | Capture d'écran |
+|-------|-------------|-----------------|
+| **GitHub Actions** | Pipeline d'intégration continue | ![GitHub Actions](image/2-ci-cd/github_actions.png) |
+| **Heroku** | Déploiement continu | ![Heroku Deployment](image/2-ci-cd/heroku_deployment.png) |
 
 ### 3. Infrastructure as Code (IAC +3)
 
-#### État de la VM
-![Vagrant Status](image/3-iac/vagrant_status.png)
-
-*La machine virtuelle est correctement créée et en cours d'exécution via Vagrant*
-
-#### Provisioning Ansible
-![Ansible Provisioning](image/3-iac/ansible_provisioning.png)
-
-*Configuration automatisée réussie avec Ansible (Node.js, Redis, et déploiement de l'application)*
-
-#### Accès Application
-![Application Access](image/3-iac/app_acces.png)
-
-*L'application est accessible depuis l'hôte via le port forwarding configuré*
+| Composant | Description | Capture d'écran |
+|-----------|-------------|-----------------|
+| **Vagrant** | Machine virtuelle opérationnelle | ![Vagrant Status](image/3-iac/vagrant_status.png) |
+| **Ansible** | Configuration automatisée | ![Ansible Provisioning](image/3-iac/ansible_provisioning.png) |
+| **Application** | Accès via port forwarding | ![Application Access](image/3-iac/app_acces.png) |
 
 ### 4. Conteneurisation Docker (D +2)
-*À venir*
+*🚧 En cours de développement*
 
 ### 5. Orchestration Docker Compose (DC +2)
-*À venir*
+*🚧 En cours de développement*
 
 ### 6. Orchestration Kubernetes (KUB +3)
-*À venir*
+*🚧 En cours de développement*
 
 ### 7. Service Mesh avec Istio (IST +2)
-*À venir*
+*🚧 En cours de développement*
 
 ## Installation et Utilisation
 
