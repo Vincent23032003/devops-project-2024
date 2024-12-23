@@ -1,7 +1,7 @@
 # Projet DevOps 2024
 
 ## Description du Projet
-Ce projet s'inscrit dans le cadre du cours DevOps à l'école ESIEA. L'objectif est de mettre en place une application web moderne en suivant les meilleures pratiques DevOps, notamment :
+Ce projet s'inscrit dans le cadre du cours DevOps à l'école ECE Paris. L'objectif est de mettre en place une application web moderne en suivant les meilleures pratiques DevOps, notamment :
 
 - **Développement** : Application Node.js/Express avec API REST et base de données Redis
 - **Qualité** : Tests automatisés, intégration continue
