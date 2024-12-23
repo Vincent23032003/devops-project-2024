@@ -125,9 +125,6 @@ vagrant destroy # Supprimer la VM
 
 #### API Endpoints - Opérations CRUD
 
-<details>
-<summary>💡 Voir toutes les opérations CRUD</summary>
-
 | Opération | Endpoint | Description | Capture d'écran |
 |-----------|----------|-------------|-----------------|
 | **CREATE** | `POST /users` | Création d'un utilisateur | ![Création](image/1-app-web/api_create.png) |
@@ -135,45 +132,23 @@ vagrant destroy # Supprimer la VM
 | **UPDATE** | `PUT /users/:id` | Mise à jour des informations | ![Mise à jour](image/1-app-web/api_update.png) |
 | **DELETE** | `DELETE /users/:id` | Suppression d'un utilisateur | ![Suppression](image/1-app-web/api_delete.png) |
 
-##### Exemples de commandes
-
-<details>
-<summary>📝 Création d'un utilisateur</summary>
-
 ```bash
+# Création d'un utilisateur
 curl -X POST http://localhost:3000/users \
      -H "Content-Type: application/json" \
      -d '{"id":"1","name":"test","email":"test@test.com"}'
-```
-</details>
 
-<details>
-<summary>🔍 Lecture d'un utilisateur</summary>
-
-```bash
+# Lecture d'un utilisateur
 curl http://localhost:3000/users/1
-```
-</details>
 
-<details>
-<summary>✏️ Mise à jour d'un utilisateur</summary>
-
-```bash
+# Mise à jour d'un utilisateur
 curl -X PUT http://localhost:3000/users/1 \
      -H "Content-Type: application/json" \
      -d '{"name":"updated test"}'
-```
-</details>
 
-<details>
-<summary>🗑️ Suppression d'un utilisateur</summary>
-
-```bash
+# Suppression d'un utilisateur
 curl -X DELETE http://localhost:3000/users/1
 ```
-</details>
-
-</details>
 
 #### Health Check
 ![Health Check](image/1-app-web/health_check.png)
