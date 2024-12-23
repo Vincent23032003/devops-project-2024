@@ -116,54 +116,79 @@ vagrant destroy # Supprimer la VM
 
 ## Screenshots
 
-### 1. Application Web et Tests
+### 1. Application Web et Tests (APP +2)
 
 #### Tests Unitaires et d'Intégration
-![Tests Réussis](image/1-app-tests/npm_test.png)
+![Tests Réussis](image/1-app-web/npm_test.png)
+
 *Exécution réussie de tous les tests unitaires et d'intégration, incluant les tests Redis et API*
 
-### 2. API Endpoints
+#### API Endpoints
+![Health Check](image/1-app-web/health_check.png)
 
-#### Health Check
-![Health Check](image/2-api-endpoints/health_check.png)
 *L'endpoint de santé /health confirme que l'application est opérationnelle*
 
 #### Opérations CRUD sur les Utilisateurs
-![Création Utilisateur](image/2-api-endpoints/api_create.png)
+1. Création d'un utilisateur :
+![Création Utilisateur](image/1-app-web/api_create.png)
+
 *POST /users - Création réussie d'un nouvel utilisateur avec ID, nom et email*
 
-![Lecture Utilisateur](image/2-api-endpoints/api_get.png)
+2. Lecture d'un utilisateur :
+![Lecture Utilisateur](image/1-app-web/api_get.png)
+
 *GET /users/:id - Récupération des détails d'un utilisateur existant*
 
-![Mise à jour Utilisateur](image/2-api-endpoints/api_update.png)
+3. Mise à jour d'un utilisateur :
+![Mise à jour Utilisateur](image/1-app-web/api_update.png)
+
 *PUT /users/:id - Mise à jour des informations d'un utilisateur*
 
-![Suppression Utilisateur](image/2-api-endpoints/api_delete.png)
+4. Suppression d'un utilisateur :
+![Suppression Utilisateur](image/1-app-web/api_delete.png)
+
 *DELETE /users/:id - Suppression réussie d'un utilisateur*
 
-### 3. Infrastructure (Vagrant & Ansible)
-
-#### État de la VM
-![Vagrant Status](image/3-infrastructure/vagrant_status.png)
-*La machine virtuelle est correctement créée et en cours d'exécution via Vagrant*
-
-#### Provisioning Ansible
-![Ansible Provisioning](image/3-infrastructure/ansible_provisioning.png)
-*Configuration automatisée réussie avec Ansible (Node.js, Redis, et déploiement de l'application)*
-
-#### Accès Application
-![Application Access](image/3-infrastructure/app_acces.png)
-*L'application est accessible depuis l'hôte via le port forwarding configuré*
-
-### 4. CI/CD Pipeline
+### 2. Pipeline CI/CD (CICD +3)
 
 #### GitHub Actions
-![GitHub Actions](image/4-ci-cd/github_actions.png)
+![GitHub Actions](image/2-ci-cd/github_actions.png)
+
 *Pipeline d'intégration continue exécutant les tests et le build automatiquement*
 
 #### Déploiement Heroku
-![Heroku Deployment](image/4-ci-cd/heroku_deployment.png)
+![Heroku Deployment](image/2-ci-cd/heroku_deployment.png)
+
 *Déploiement continu réussi sur la plateforme Heroku*
+
+### 3. Infrastructure as Code (IAC +3)
+
+#### État de la VM
+![Vagrant Status](image/3-iac/vagrant_status.png)
+
+*La machine virtuelle est correctement créée et en cours d'exécution via Vagrant*
+
+#### Provisioning Ansible
+![Ansible Provisioning](image/3-iac/ansible_provisioning.png)
+
+*Configuration automatisée réussie avec Ansible (Node.js, Redis, et déploiement de l'application)*
+
+#### Accès Application
+![Application Access](image/3-iac/app_acces.png)
+
+*L'application est accessible depuis l'hôte via le port forwarding configuré*
+
+### 4. Conteneurisation Docker (D +2)
+*À venir*
+
+### 5. Orchestration Docker Compose (DC +2)
+*À venir*
+
+### 6. Orchestration Kubernetes (KUB +3)
+*À venir*
+
+### 7. Service Mesh avec Istio (IST +2)
+*À venir*
 
 ## Installation et Utilisation
 
