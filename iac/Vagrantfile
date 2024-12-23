@@ -1,0 +1,17 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/focal64"  # Ubuntu 20.04 LTS
+  
+  config.vm.network "forwarded_port", guest: 3000, host: 3000  # Pour l'application Node.js
+  config.vm.network "forwarded_port", guest: 6379, host: 6379  # Pour Redis
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "1024"
+    vb.cpus = 2
+  end
+
+  # Configuration Ansible
+  config.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "playbooks/main.yml"
+    ansible.install = true
+  end
+end

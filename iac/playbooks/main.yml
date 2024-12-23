@@ -1,0 +1,69 @@
+---
+- name: Configure server for Node.js application
+  hosts: all
+  become: yes
+  tasks:
+    # Mise à jour du système
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    # Installation de Node.js
+    - name: Install Node.js repository
+      shell: |
+        curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+
+    - name: Install Node.js
+      apt:
+        name: nodejs
+        state: present
+
+    # Installation de Redis
+    - name: Install Redis
+      apt:
+        name: redis-server
+        state: present
+
+    - name: Ensure Redis is running
+      service:
+        name: redis-server
+        state: started
+        enabled: yes
+
+    # Configuration de l'application
+    - name: Create app directory
+      file:
+        path: /opt/userapi
+        state: directory
+        mode: '0755'
+
+    - name: Copy application files
+      synchronize:
+        src: /vagrant/userapi/
+        dest: /opt/userapi/
+        rsync_opts:
+          - "--exclude=node_modules"
+
+    - name: Install application dependencies
+      npm:
+        path: /opt/userapi
+        state: present
+
+    # Démarrage de l'application
+    - name: Start application
+      shell: |
+        cd /opt/userapi
+        npm start
+      async: 1000
+      poll: 0
+
+    # Vérification de la santé
+    - name: Check application health
+      uri:
+        url: http://localhost:3000/health
+        return_content: yes
+      register: health_check
+      until: health_check.status == 200
+      retries: 6
+      delay: 10
