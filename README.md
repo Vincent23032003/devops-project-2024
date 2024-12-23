@@ -1,40 +1,54 @@
-# DevOps Project 2024
+# Projet DevOps 2024
 
 ## Description du Projet
-Ce projet implémente une API REST simple de gestion d'utilisateurs avec les fonctionnalités CRUD (Create, Read, Update, Delete). L'application est développée en Node.js avec Express.js et utilise Redis comme base de données.
+Ce projet est réalisé dans le cadre du cours DevOps. Il s'agit d'une application web implémentant une API de gestion d'utilisateurs avec les fonctionnalités CRUD (Create, Read, Update, Delete), développée en Node.js et utilisant Redis comme base de données.
 
-## Fonctionnalités
-- API REST complète pour la gestion des utilisateurs
+## Travail Réalisé
+
+### 1. Application Web
+- Développement d'une API REST complète en Node.js avec Express
+- Implémentation des opérations CRUD pour les utilisateurs
 - Stockage des données dans Redis
-- Tests unitaires et d'intégration
-- Endpoint de santé (/health)
-- Documentation complète des endpoints
+- Tests complets :
+  - Tests unitaires des opérations Redis
+  - Tests d'API pour tous les endpoints
+  - Tests de configuration et connexion
+  - Tests de l'endpoint de santé
+
+### 2. Pipeline CI/CD
+- Mise en place d'un pipeline avec GitHub Actions comprenant :
+  - Build et tests automatisés
+  - Déploiement automatique avec Docker Compose
+  - Intégration de Redis pour les tests
 
 ## Structure du Projet
 ```
 .
+├── .github/
+│   └── workflows/          # Configuration CI/CD
 ├── userapi/
-│   ├── src/
-│   │   └── index.js          # Point d'entrée de l'application
-│   ├── test/
-│   │   ├── api.test.js       # Tests d'API
-│   │   ├── unit.test.js      # Tests unitaires
-│   │   ├── config.test.js    # Tests de configuration
-│   │   └── test-setup.js     # Configuration des tests
-│   ├── package.json          # Dépendances et scripts
-│   └── CHANGELOG.md          # Journal des modifications
-└── README.md
+│   ├── src/               # Code source de l'application
+│   ├── test/              # Tests
+│   ├── package.json       # Dépendances
+│   └── CHANGELOG.md       # Journal des modifications
+├── iac/                   # Pour Ansible (à venir)
+├── k8s/                   # Pour Kubernetes (à venir)
+├── istio/                 # Pour Istio (à venir)
+├── image/                 # Screenshots (à venir)
+└── docker-compose.yaml    # Configuration Docker Compose
 ```
 
-## Prérequis
+## Installation et Utilisation
+
+### Prérequis
 - Node.js (v14 ou supérieur)
 - Redis Server
 
-## Installation
+### Installation
 
 1. Cloner le repository :
 ```bash
-git clone <url-du-repo>
+git clone https://github.com/Vincent23032003/devops-project-2024.git
 cd devops-project-2024
 ```
 
@@ -50,17 +64,17 @@ cd userapi
 npm install
 ```
 
-## Tests
+### Tests
 Pour exécuter les tests :
 ```bash
 npm test
 ```
 
-Les tests incluent :
-- Tests unitaires des opérations Redis
-- Tests d'API pour tous les endpoints CRUD
-- Tests de configuration et de connexion
-- Tests de l'endpoint de santé
+### Développement
+Pour lancer l'application en mode développement :
+```bash
+npm run dev
+```
 
 ## API Endpoints
 
@@ -75,14 +89,16 @@ Les tests incluent :
   - Body: `{ "name": "string", "email": "string" }`
 - DELETE `/users/:id` - Supprimer un utilisateur
 
-## Développement
-Pour lancer l'application en mode développement :
-```bash
-npm run dev
-```
+## Liens
+- [Repository GitHub](https://github.com/Vincent23032003/devops-project-2024.git)
 
-## Auteur
-[Votre nom]
+## Auteurs
+- Vincent BARÉ
+- Louis DECOURTIS
+- Quentin CARMINOT
 
-## Licence
-ISC
+## Prochaines Étapes
+- [ ] Configuration Docker et Docker Compose
+- [ ] Infrastructure as Code avec Ansible
+- [ ] Orchestration avec Kubernetes
+- [ ] Service Mesh avec Istio
