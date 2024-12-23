@@ -13,35 +13,35 @@ L'application elle-même est une API de gestion d'utilisateurs permettant les op
 
 ## État d'Avancement du Projet
 
-### ✅ 1. Application Web
-- ✅ API CRUD pour les utilisateurs
-- ✅ Stockage dans Redis
-- ✅ Tests (unit, API, configuration, connection)
-- ✅ Endpoint health check
+### 1. Application Web
+- API CRUD pour les utilisateurs
+- Stockage dans Redis
+- Tests (unit, API, configuration, connection)
+- Endpoint health check
 
-### ✅ 2. Pipeline CI/CD
-- ✅ Configuration avec GitHub Actions
-- ✅ Tests automatisés
-- ✅ Déploiement configuré
+### 2. Pipeline CI/CD
+- Configuration avec GitHub Actions
+- Tests automatisés
+- Déploiement configuré
 
-### ❌ 3. Infrastructure as Code
-- ❌ Configuration Vagrant (1 VM Linux)
-- ❌ Provisioning avec Ansible (installation de runtime, DB, application)
+### 3. Infrastructure as Code
+- Configuration Vagrant (1 VM Linux)
+- Provisioning avec Ansible (installation de runtime, DB, application)
 
-### ❌ 4. Docker
-- ❌ Création du Dockerfile
-- ❌ Push sur Docker Hub
+### 4. Docker
+- Création du Dockerfile
+- Push sur Docker Hub
 
-### ❌ 5. Docker Compose
-- ❌ Création du docker-compose.yml
+### 5. Docker Compose
+- Création du docker-compose.yml
 
-### ❌ 6. Kubernetes
-- ❌ Installation de Minikube
-- ❌ Création des manifests YAML (deployments, services, volumes)
+### 6. Kubernetes
+- Installation de Minikube
+- Création des manifests YAML (deployments, services, volumes)
 
-### ❌ 7. Service Mesh avec Istio
-- ❌ Déploiement avec Istio
-- ❌ Configuration du routing et traffic shifting
+### 7. Service Mesh avec Istio
+- Déploiement avec Istio
+- Configuration du routing et traffic shifting
 
 ## Travail Réalisé
 
@@ -61,6 +61,42 @@ L'application elle-même est une API de gestion d'utilisateurs permettant les op
   - Déploiement automatique avec Docker Compose
   - Intégration de Redis pour les tests
 
+### 3. Infrastructure as Code
+- Configuration d'une VM Ubuntu 20.04 LTS avec Vagrant
+- Provisioning automatisé avec Ansible incluant :
+  - Installation de Node.js 18.x
+  - Installation et configuration de Redis
+  - Déploiement automatique de l'application
+  - Configuration des ports (3000 pour l'API, 6379 pour Redis)
+  - Vérification de la santé de l'application
+
+Pour démarrer l'environnement de développement avec Vagrant :
+
+1. Assurez-vous d'avoir installé :
+   - VirtualBox
+   - Vagrant
+
+2. Lancez l'environnement :
+```bash
+cd iac
+vagrant up
+```
+
+3. Vérifiez que l'application fonctionne :
+```bash
+# Depuis la VM
+vagrant ssh -c "curl http://localhost:3000/health"
+
+# Depuis votre machine hôte
+curl http://localhost:3000/health
+```
+
+4. Pour arrêter l'environnement :
+```bash
+vagrant halt    # Arrêter la VM
+vagrant destroy # Supprimer la VM
+```
+
 ## Structure du Projet
 ```
 .
@@ -71,12 +107,63 @@ L'application elle-même est une API de gestion d'utilisateurs permettant les op
 │   ├── test/              # Tests
 │   ├── package.json       # Dépendances
 │   └── CHANGELOG.md       # Journal des modifications
-├── iac/                   # Pour Ansible (à venir)
+├── iac/                   # Pour Ansible
 ├── k8s/                   # Pour Kubernetes (à venir)
 ├── istio/                 # Pour Istio (à venir)
-├── image/                 # Screenshots (à venir)
+├── image/                 # Screenshots
 └── docker-compose.yaml    # Configuration Docker Compose
 ```
+
+## Screenshots
+
+### 1. Application Web et Tests
+
+#### Tests Unitaires et d'Intégration
+![Tests Réussis](image/1-app-tests/npm_test.png)
+*Exécution réussie de tous les tests unitaires et d'intégration, incluant les tests Redis et API*
+
+### 2. API Endpoints
+
+#### Health Check
+![Health Check](image/2-api-endpoints/health_check.png)
+*L'endpoint de santé /health confirme que l'application est opérationnelle*
+
+#### Opérations CRUD sur les Utilisateurs
+![Création Utilisateur](image/2-api-endpoints/api_create.png)
+*POST /users - Création réussie d'un nouvel utilisateur avec ID, nom et email*
+
+![Lecture Utilisateur](image/2-api-endpoints/api_get.png)
+*GET /users/:id - Récupération des détails d'un utilisateur existant*
+
+![Mise à jour Utilisateur](image/2-api-endpoints/api_update.png)
+*PUT /users/:id - Mise à jour des informations d'un utilisateur*
+
+![Suppression Utilisateur](image/2-api-endpoints/api_delete.png)
+*DELETE /users/:id - Suppression réussie d'un utilisateur*
+
+### 3. Infrastructure (Vagrant & Ansible)
+
+#### État de la VM
+![Vagrant Status](image/3-infrastructure/vagrant_status.png)
+*La machine virtuelle est correctement créée et en cours d'exécution via Vagrant*
+
+#### Provisioning Ansible
+![Ansible Provisioning](image/3-infrastructure/ansible_provisioning.png)
+*Configuration automatisée réussie avec Ansible (Node.js, Redis, et déploiement de l'application)*
+
+#### Accès Application
+![Application Access](image/3-infrastructure/app_acces.png)
+*L'application est accessible depuis l'hôte via le port forwarding configuré*
+
+### 4. CI/CD Pipeline
+
+#### GitHub Actions
+![GitHub Actions](image/4-ci-cd/github_actions.png)
+*Pipeline d'intégration continue exécutant les tests et le build automatiquement*
+
+#### Déploiement Heroku
+![Heroku Deployment](image/4-ci-cd/heroku_deployment.png)
+*Déploiement continu réussi sur la plateforme Heroku*
 
 ## Installation et Utilisation
 
@@ -129,10 +216,10 @@ L'application est déployée sur Heroku et accessible à l'adresse suivante :
 
 ### État du déploiement
 
-- ✅ Application web Node.js/Express
-- ✅ Tests unitaires et d'intégration
-- ✅ Déploiement continu sur Heroku
-- ✅ Health check endpoint
+- Application web Node.js/Express
+- Tests unitaires et d'intégration
+- Déploiement continu sur Heroku
+- Health check endpoint
 
 ## API Endpoints
 

@@ -128,3 +128,29 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Vagrant
+.vagrant/
+*.log
+*.box
+
+# VirtualBox
+.virtualbox/
+*.vdi
+*.vbox
+*.vbox-prev
+
+# Ansible
+*.retry
+ansible.cfg
+inventory.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

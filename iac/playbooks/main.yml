@@ -1,51 +1,68 @@
 ---
-- name: Configure server for Node.js application
+- name: Configuration du serveur pour l'application Node.js
   hosts: all
   become: yes
   tasks:
     # Mise à jour du système
-    - name: Update apt cache
+    - name: Mise à jour du cache apt
       apt:
         update_cache: yes
         cache_valid_time: 3600
 
+    - name: Installation des paquets essentiels
+      apt:
+        name: 
+          - curl
+          - git
+          - build-essential
+        state: present
+
     # Installation de Node.js
-    - name: Install Node.js repository
+    - name: Installation du dépôt Node.js
       shell: |
         curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+      args:
+        warn: false
 
-    - name: Install Node.js
+    - name: Installation de Node.js
       apt:
         name: nodejs
         state: present
 
     # Installation de Redis
-    - name: Install Redis
+    - name: Installation de Redis
       apt:
         name: redis-server
         state: present
 
-    - name: Ensure Redis is running
+    - name: Configuration de Redis - Bind sur toutes les interfaces
+      lineinfile:
+        path: /etc/redis/redis.conf
+        regexp: '^bind 127\.0\.0\.1'
+        line: 'bind 0.0.0.0'
+        backup: yes
+
+    - name: Redémarrage de Redis
       service:
         name: redis-server
-        state: started
+        state: restarted
         enabled: yes
 
     # Configuration de l'application
-    - name: Create app directory
+    - name: Création du répertoire de l'application
       file:
         path: /opt/userapi
         state: directory
         mode: '0755'
 
-    - name: Copy application files
+    - name: Copie des fichiers de l'application
       synchronize:
         src: /vagrant/userapi/
         dest: /opt/userapi/
         rsync_opts:
           - "--exclude=node_modules"
 
-    - name: Install application dependencies
+    - name: Installation des dépendances de l'application
       npm:
         path: /opt/userapi
         state: present
@@ -59,7 +76,7 @@
       poll: 0
 
     # Vérification de la santé
-    - name: Check application health
+    - name: Vérification de la santé de l'application
       uri:
         url: http://localhost:3000/health
         return_content: yes
