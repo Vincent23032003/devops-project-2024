@@ -1,1 +1,1 @@
-web: cd userapi && npm start
+web: node userapi/src/index.js
