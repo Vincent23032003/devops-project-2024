@@ -50,21 +50,17 @@ jobs:
         run: npm test
 
   deploy:
-    name: Deploy Application
-    runs-on: ubuntu-latest
+    name: Deploy to Heroku
     needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     
     steps:
-      # 1. Récupère le code source
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      # 2. Configuration de Docker
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      # 3. Déploie l'application avec Docker Compose
-      - name: Deploy with Docker Compose
-        run: |
-          docker-compose up -d
-          echo "Application déployée avec succès !"
+      - uses: actions/checkout@v3
+      
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.14
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: "devops-userapi-2024-671a8bceceee"
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
