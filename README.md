@@ -151,6 +151,6 @@ L'application est déployée sur Heroku et accessible à l'adresse suivante :
 - [Repository GitHub](https://github.com/Vincent23032003/devops-project-2024.git)
 
 ## Auteurs
-- Vincent BARÉ
-- Louis DECOURTIS
-- Quentin CARMINOT
+- Vincent BARÉ Cyber Gr 01
+- Louis DECOURTIS Cyber Gr 01
+- Quentin CARMINOT Cyber Gr 01
