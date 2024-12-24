@@ -269,7 +269,12 @@ curl -X DELETE http://localhost:3000/users/1
 | **Application** | Accès via port forwarding | ![Application Access](image/3-iac/app_acces.png) |
 
 ### 4. Conteneurisation Docker (D +2)
-*🚧 En cours de développement*
+
+#### Build image
+![Build image](image/4-userapi/dockerBuildImage.png)
+
+#### Push image
+![Push image](image/4-userapi/dockerPushImage.png)
 
 ### 5. Orchestration Docker Compose (DC +2)
 *🚧 En cours de développement*
