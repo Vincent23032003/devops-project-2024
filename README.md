@@ -29,8 +29,8 @@ L'application elle-même est une API de gestion d'utilisateurs permettant les op
 ✅ Provisioning avec Ansible (installation de runtime, DB, application)
 
 ### 4. Docker
-⏳ Création du Dockerfile
-⏳ Push sur Docker Hub
+✅ Création du Dockerfile
+✅ Push sur Docker Hub
 
 ### 5. Docker Compose
 ⏳ Création du docker-compose.yml
@@ -95,6 +95,104 @@ curl http://localhost:3000/health
 ```bash
 vagrant halt    # Arrêter la VM
 vagrant destroy # Supprimer la VM
+```
+
+### 4. Construction et publication de l'image Docker de l'application
+
+## Objectif
+Cette étape consiste à :
+1. Construire une image Docker fonctionnelle pour l'application.
+2. S'assurer que seuls les fichiers nécessaires sont inclus dans l'image.
+3. Publier l'image sur Docker Hub pour la rendre accessible.
+
+---
+
+## Préparation
+
+### Structure du projet
+Le projet contient les éléments suivants :
+- **Dockerfile** : Définit comment l'image Docker est construite.
+- **.dockerignore** : Spécifie les fichiers et dossiers à exclure de l'image Docker.
+- **Code source** : L'application est un API utilisateur avec des fonctionnalités CRUD connectée à une base de données Redis.
+
+---
+
+## Étapes réalisées
+
+### 1. Création d'un fichier `.dockerignore`
+Le fichier `.dockerignore` est utilisé pour exclure les fichiers inutiles du contexte Docker, réduisant ainsi la taille de l'image. Voici son contenu :
+
+```bash
+plaintext
+node_modules
+.git
+.dockerignore
+Dockerfile
+README.md
+.log
+```
+
+### 2. Écriture du Dockerfile
+
+```bash
+# Utilisation d'une image de base officielle Node.js
+FROM node:16
+
+# Définition du répertoire de travail dans le conteneur
+WORKDIR /app
+
+# Copier les fichiers nécessaires pour installer les dépendances
+COPY package*.json ./
+
+# Installation des dépendances
+RUN npm install
+
+# Copier tout le code source de l'application
+COPY . .
+
+# Exposer le port 3000
+EXPOSE 3000
+
+# Commande pour démarrer l'application
+CMD ["npm", "start"]
+```
+### 3. Construction de l'image Docker
+
+Pour construire l'image Docker, la commande suivante a été utilisée :
+
+```bash
+docker build -t vincennnt/userapi:latest .
+```
+
+Cette commande a :
+
+Créé une image Docker nommée userapi sous mon compte Docker Hub vincennnt.
+Utilisé le contexte actuel (.) pour inclure uniquement les fichiers nécessaires.
+
+### 4. Test local de l'image Docker
+
+Avant de publier l'image, elle a été testée en local :
+
+```bash
+docker run --name userapi --network vincent23032003Network -p 3000:3000 vincennnt/userapi:latest
+```
+Le conteneur a été connecté au réseau Docker pour interagir avec Redis.
+Les logs ont confirmé que l'application s'est connectée correctement à Redis et a démarré.
+
+### 5. Publication de l'image sur Docker Hub
+
+L'image Docker a été publiée sur Docker Hub pour permettre un déploiement ultérieur :
+
+```bash
+docker push vincennnt/userapi:latest
+```
+Avant cela, un dépôt nommé userapi a été créé sur Docker Hub pour correspondre au nom de l'image.
+
+### Résultat
+L'image Docker est maintenant disponible sur Docker Hub : Lien vers Docker Hub (remplacer par le lien réel).
+L'application peut être déployée depuis Docker Hub en utilisant :
+```bash
+docker pull vincennnt/userapi:latest
 ```
 
 ## Structure du Projet
