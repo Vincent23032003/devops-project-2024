@@ -276,6 +276,9 @@ curl -X DELETE http://localhost:3000/users/1
 #### Push image
 ![Push image](image/4-docker-image/push.png)
 
+#### Vérificaiton dans DockerHub
+![Docker Hub](image/4-docker-image/dockerHub.png)
+
 ### 5. Orchestration Docker Compose (DC +2)
 *🚧 En cours de développement*
 
