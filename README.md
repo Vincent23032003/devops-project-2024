@@ -271,10 +271,10 @@ curl -X DELETE http://localhost:3000/users/1
 ### 4. Conteneurisation Docker (D +2)
 
 #### Build image
-![Build image](image/4-userapi/dockerBuildImage.png)
+![Build image](image/4-docker-image/build.png)
 
 #### Push image
-![Push image](image/4-userapi/dockerPushImage.png)
+![Push image](image/4-docker-image/push.png)
 
 ### 5. Orchestration Docker Compose (DC +2)
 *🚧 En cours de développement*
