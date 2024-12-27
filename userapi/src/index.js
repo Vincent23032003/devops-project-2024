@@ -1,5 +1,5 @@
-const express = require('express'); 
-const { createClient } = require('redis'); 
+const express = require('express');
+const { createClient } = require('redis');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,21 +9,25 @@ app.use(express.json());
 
 // Création et configuration du client Redis
 let redisClient = null;
-if (process.env.NODE_ENV !== 'production') {
-  redisClient = createClient({
-    url: 'redis://127.0.0.1:6379', 
-  });
 
-  // Gestion des erreurs Redis
-  redisClient.on('error', (err) => {
-    console.error('Redis Client Error:', err);
-  });
+(async () => {
+  try {
+    redisClient = createClient({
+      url: `redis://${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || 6379}`,
+    });
 
-  // Connexion à Redis
-  redisClient.connect()
-    .then(() => console.log('Connected to Redis'))
-    .catch((err) => console.error('Could not connect to Redis:', err));
-}
+    // Gestion des erreurs Redis
+    redisClient.on('error', (err) => {
+      console.error('Redis Client Error:', err);
+    });
+
+    // Connexion à Redis
+    await redisClient.connect();
+    console.log('Connected to Redis');
+  } catch (err) {
+    console.error('Could not connect to Redis:', err);
+  }
+})();
 
 // Endpoint santé
 app.get('/health', (req, res) => {
@@ -32,10 +36,10 @@ app.get('/health', (req, res) => {
 
 // Page d'accueil
 app.get('/', (req, res) => {
-  res.status(200).json({ 
+  res.status(200).json({
     message: 'Welcome to UserAPI',
     environment: process.env.NODE_ENV || 'development',
-    redis_status: redisClient ? 'connected' : 'disabled'
+    redis_status: redisClient ? 'connected' : 'disabled',
   });
 });
 
