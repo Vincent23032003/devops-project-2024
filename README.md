@@ -388,7 +388,306 @@ Création d'une nouvelle image appelé node-api en utilisant les fonctionnalité
 
 
 ### 6. Orchestration Kubernetes (KUB +3)
-*🚧 En cours de développement*
+
+# 🚀 Orchestration Kubernetes avec Minikube
+
+Ce guide vous guide à travers la configuration de l'orchestration Docker utilisant Kubernetes sur Minikube. La configuration comprend le déploiement de deux services (`userapi` et `redis`) avec un stockage persistant.
+
+## 📋 Prérequis
+
+- **Minikube** et **kubectl** installés sur votre machine
+- Les images Docker pour `userapi` et `redis` doivent être disponibles dans votre registre Docker local ou un registre public
+- Connaissances de base des ressources Kubernetes (pods, déploiements, services)
+
+## 🛠️ Instructions de configuration
+
+### 1. 🌟 Installer Minikube et démarrer le cluster
+> Action : Initialisation de l'environnement Kubernetes local
+
+#### 📥 Installer Minikube
+
+Suivez le guide officiel d'installation de [Minikube](https://minikube.sigs.k8s.io/docs/) en fonction de votre système d'exploitation.
+
+#### 🚦 Démarrer le cluster Minikube
+
+```bash
+# Démarre un cluster Kubernetes local avec les paramètres par défaut
+# Cette commande initialise un environnement Kubernetes mononode sur votre machine
+minikube start
+```
+
+[Voir le résultat](./images/minikube-start.png)
+
+#### ✅ Vérifier le cluster
+
+```bash
+# Affiche les informations sur le cluster Kubernetes en cours d'exécution
+# Vous verrez l'URL du plan de contrôle et du service DNS CoreDNS
+kubectl cluster-info
+```
+
+[Voir la sortie du cluster-info](./images/cluster-info.png)
+
+### 2. 🐳 Dockeriser l'application
+> Action : Préparation des conteneurs pour le déploiement
+
+#### 🏗️ Construire les images Docker
+
+```bash
+# Construit l'image Docker pour l'API utilisateur
+# Le tag 'latest' indique la version la plus récente
+docker build -t quentinc123/userapi:latest .
+
+# Construit l'image Docker pour Redis
+# Utilise l'image officielle Redis comme base
+docker build -t redis:latest .
+```
+
+[Voir le processus de build Docker](./images/docker-build.png)
+
+### 3. 📝 Créer les manifestes Kubernetes
+> Action : Configuration des ressources Kubernetes nécessaires
+
+Créez les fichiers YAML Kubernetes suivants pour définir vos déploiements et services.
+
+#### `redis-deployment.yaml`
+
+Ce fichier définit le déploiement et le service pour le service `redis`.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:latest
+        ports:
+        - containerPort: 6379
+```
+
+#### `redis-service.yaml`
+
+Ce fichier définit le service pour le service `redis`.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  selector:
+    app: redis
+  ports:
+    - protocol: TCP
+      port: 6379
+  clusterIP: None
+```
+
+#### `userapi-deployment.yaml`
+
+Ce fichier définit le déploiement pour le service `userapi`.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userapi-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: userapi
+  template:
+    metadata:
+      labels:
+        app: userapi
+    spec:
+      containers:
+      - name: userapi-container
+        image: quentinc123/userapi:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: REDIS_HOST
+          value: redis-service
+```
+
+#### `userapi-service.yaml`
+
+Ce fichier définit le service pour le service `userapi`.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: userapi-service
+spec:
+  selector:
+    app: userapi
+  ports:
+    - protocol: TCP
+      port: 3000
+  clusterIP: None
+```
+
+#### Volume persistant et réclamation pour Redis
+
+Créez les fichiers suivants pour le volume persistant et la réclamation.
+
+**`redis-pv.yaml`** :
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data/redis
+```
+
+**`redis-pvc.yaml`** :
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+```
+
+[Configuration des manifestes en action](./images/manifests-creation.png)
+
+### 4. ⚙️ Appliquer les manifestes Kubernetes
+> Action : Déploiement des services dans le cluster
+
+```bash
+# Crée le volume persistant pour Redis
+# Permet de conserver les données même après un redémarrage
+kubectl apply -f redis-pv.yaml
+
+# Crée la réclamation de volume persistant
+# Lie le volume persistant à Redis
+kubectl apply -f redis-pvc.yaml
+
+# Déploie Redis avec la configuration spécifiée
+# Crée un pod Redis avec stockage persistant
+kubectl apply -f redis-deployment.yaml
+
+# Expose Redis comme un service dans le cluster
+# Permet aux autres pods de communiquer avec Redis
+kubectl apply -f redis-service.yaml
+
+# Déploie l'API utilisateur
+# Crée les pods pour l'application userapi
+kubectl apply -f userapi-deployment.yaml
+
+# Expose l'API utilisateur comme un service
+# Permet d'accéder à l'API depuis l'extérieur du cluster
+kubectl apply -f userapi-service.yaml
+```
+
+[Voir le déploiement des manifestes](./images/manifests-deployment.png)
+
+### 5. 🔍 Vérifier les déploiements
+> Action : Validation de l'état des services déployés
+
+```bash
+# Liste tous les pods en cours d'exécution
+# Vérifie que les pods sont en état 'Running'
+kubectl get pods
+
+# Liste tous les services actifs
+# Montre les points d'accès des applications
+kubectl get services
+
+# Liste tous les déploiements
+# Affiche le nombre de répliques et leur état
+kubectl get deployments
+```
+
+[Voir l'état des déploiements](./images/deployment-status.png)
+
+### 6. 🧪 Tester les services
+> Action : Test de l'accessibilité des services déployés
+
+```bash
+# Transfère le port 3000 du service vers localhost
+# Permet d'accéder à l'API depuis votre machine locale
+kubectl port-forward service/userapi-service 3000:3000
+```
+
+[Voir l'interface utilisateur en action](./images/userapi-interface.png)
+
+### 7. 🔄 Redémarrer les déploiements
+> Action : Mise à jour des services en cours d'exécution
+
+```bash
+# Redémarre le déploiement de l'API utilisateur
+# Utile pour appliquer les changements de configuration
+kubectl rollout restart deployment/userapi-deployment
+
+# Redémarre le déploiement Redis
+# Assure que Redis redémarre proprement avec la nouvelle configuration
+kubectl rollout restart deployment/redis-deployment
+```
+
+[Voir le redémarrage des déploiements](./images/deployment-restart.png)
+
+### 8. 🧹 Nettoyer les ressources
+> Action : Suppression propre des ressources créées
+
+```bash
+# Supprime le volume persistant Redis
+# Libère l'espace de stockage alloué
+kubectl delete -f redis-pv.yaml
+
+# Supprime la réclamation de volume persistant
+# Nettoie la demande de stockage
+kubectl delete -f redis-pvc.yaml
+
+# Supprime le déploiement Redis
+# Arrête tous les pods Redis
+kubectl delete -f redis-deployment.yaml
+
+# Supprime le déploiement de l'API utilisateur
+# Arrête tous les pods de l'API
+kubectl delete -f userapi-deployment.yaml
+```
+
+[Voir le nettoyage des ressources](./images/cleanup.png)
+
+## 🎉 Conclusion
+
+Vous avez maintenant configuré avec succès l'orchestration Docker utilisant Kubernetes sur Minikube. Les services `userapi` et `redis` sont en cours d'exécution avec un stockage persistant, et vous pouvez tester les services localement en utilisant le transfert de port.
+
+## 📚 Ressources utiles
+
+- [Documentation officielle Kubernetes](https://kubernetes.io/docs/)
+- [Documentation Minikube](https://minikube.sigs.k8s.io/docs/)
+- [Guide des meilleures pratiques Kubernetes](https://kubernetes.io/docs/concepts/configuration/overview/)
+
 
 ### 7. Service Mesh avec Istio (IST +2)
 *🚧 En cours de développement*
