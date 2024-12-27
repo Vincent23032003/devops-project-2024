@@ -426,7 +426,7 @@ minikube start
 kubectl cluster-info
 ```
 
-[Voir la sortie du cluster-info](./images/cluster-info.png)
+[Voir la sortie du cluster-info](./image/6-K8/cluster-info.png)
 
 ### 2. 🐳 Dockeriser l'application
 > Action : Préparation des conteneurs pour le déploiement
@@ -443,7 +443,8 @@ docker build -t quentinc123/userapi:latest .
 docker build -t redis:latest .
 ```
 
-[Voir le processus de build Docker](./images/docker-build.png)
+[Voir le processus de build Docker](./image/6-K8/docker-build.png)
+[Voir le processus de build Docker pour Redis](./image/6-K8/docker-build-redis.png)
 
 ### 3. 📝 Créer les manifestes Kubernetes
 > Action : Configuration des ressources Kubernetes nécessaires
@@ -577,8 +578,6 @@ spec:
       storage: 1Gi
 ```
 
-[Configuration des manifestes en action](./images/manifests-creation.png)
-
 ### 4. ⚙️ Appliquer les manifestes Kubernetes
 > Action : Déploiement des services dans le cluster
 
@@ -608,7 +607,7 @@ kubectl apply -f userapi-deployment.yaml
 kubectl apply -f userapi-service.yaml
 ```
 
-[Voir le déploiement des manifestes](./images/manifests-deployment.png)
+[Voir le déploiement des manifestes](./image/6-K8/manifests-deployment.png)
 
 ### 5. 🔍 Vérifier les déploiements
 > Action : Validation de l'état des services déployés
@@ -627,7 +626,7 @@ kubectl get services
 kubectl get deployments
 ```
 
-[Voir l'état des déploiements](./images/deployment-status.png)
+[Voir l'état des déploiements](./image/6-K8/deployment-status.png)
 
 ### 6. 🧪 Tester les services
 > Action : Test de l'accessibilité des services déployés
@@ -638,7 +637,7 @@ kubectl get deployments
 kubectl port-forward service/userapi-service 3000:3000
 ```
 
-[Voir l'interface utilisateur en action](./images/userapi-interface.png)
+[Voir l'interface utilisateur en action](./image/6-K8/userapi-interface.png)
 
 ### 7. 🔄 Redémarrer les déploiements
 > Action : Mise à jour des services en cours d'exécution
@@ -653,7 +652,7 @@ kubectl rollout restart deployment/userapi-deployment
 kubectl rollout restart deployment/redis-deployment
 ```
 
-[Voir le redémarrage des déploiements](./images/deployment-restart.png)
+[Voir le redémarrage des déploiements](./image/6-K8/deployment-restart.png)
 
 ### 8. 🧹 Nettoyer les ressources
 > Action : Suppression propre des ressources créées
@@ -676,7 +675,7 @@ kubectl delete -f redis-deployment.yaml
 kubectl delete -f userapi-deployment.yaml
 ```
 
-[Voir le nettoyage des ressources](./images/cleanup.png)
+[Voir le nettoyage des ressources](./image/6-K8/cleanup.png)
 
 ## 🎉 Conclusion
 
