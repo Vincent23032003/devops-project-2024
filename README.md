@@ -195,6 +195,79 @@ L'application peut être déployée depuis Docker Hub en utilisant :
 docker pull vincennnt/userapi:latest
 ```
 
+
+### 5.  Orchestration avec Docker Compose
+
+Dans cette partie, nous utilisons Docker Compose pour orchestrer notre application Node.js et sa dépendance Redis. Docker Compose simplifie le déploiement en coordonnant les conteneurs nécessaires à l'exécution de l'application.
+
+## Prérequis
+Avant de commencer, assurez-vous d'avoir :
+- [Docker](https://www.docker.com/products/docker-desktop) installé sur votre machine.
+- [Docker Compose](https://docs.docker.com/compose/) inclus dans votre installation Docker.
+
+---
+
+## Création du fichier docker-compose.yaml 
+
+Voici sa structure :
+```bash
+services:
+  app:
+    build:
+      context: ./userapi
+      dockerfile: Dockerfile
+    image: <dockerhub-username>/node-api
+    ports:
+      - "3000:3000"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+```
+---
+
+## Quelques commandes importante de Docker compose
+
+Pour lancer les services :
+
+```bash
+docker-compose up --build
+```
+
+Pour vérifier les logs :
+```bash
+docker-compose logs -f
+```
+
+Pour tester l'application :
+```bash
+# Ajouter un utilisateur
+curl -X POST -H "Content-Type: application/json" -d '{"id":"69","name":"John","email":"john@cena.com"}' http://localhost:3000/users
+
+# Récupérer un utilisateur
+curl http://localhost:3000/users/69
+
+```
+
+Pour arrêter les services :
+```bash
+docker-compose down
+```
+
+## Résultat attendu
+
+À la fin de cette partie :
+
+Les conteneurs app et redis fonctionnent correctement ensemble.
+L'application est accessible sur http://localhost:3000.
+Redis stocke et gère les données utilisateur via l'application.
+
 ## Structure du Projet
 ```
 .
@@ -286,7 +359,33 @@ curl -X DELETE http://localhost:3000/users/1
 ![Docker Hub](image/4-docker-image/dockerHub.png)
 
 ### 5. Orchestration Docker Compose (DC +2)
-*🚧 En cours de développement*
+
+Création d'une nouvelle image appelé node-api en utilisant les fonctionnalités de Docker Compose
+
+#### Build image
+![Build image](image/5-docker-compose/build.png)
+
+#### Build image
+![Push image](image/5-docker-compose/push.png)
+
+#### Vérification image
+![Verification dans docker Hub](image/5-docker-compose/dockerHub.png)
+
+#### Lancement des services
+![docker-compose-up](image/5-docker-compose/docker-compose-up.png)
+
+#### Services fonctionnels
+![Services fonctionnels](image/5-docker-compose/serveur-running.png)
+
+### Création user avec curl snippet
+![Curls snippet](image/5-docker-compose/curlSnippet.png)
+
+### Création user avec curl snippet
+![Creation user curl](image/5-docker-compose/creationUserCurl.png)
+
+### Création user avec curl snippet
+![Vérification création user curl](image/5-docker-compose/verificationUserCreation.png)
+
 
 ### 6. Orchestration Kubernetes (KUB +3)
 *🚧 En cours de développement*
