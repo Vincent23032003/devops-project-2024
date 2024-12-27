@@ -416,7 +416,7 @@ Suivez le guide officiel d'installation de [Minikube](https://minikube.sigs.k8s.
 minikube start
 ```
 
-[Voir le résultat](./image/minikube-start.png)
+[Voir le résultat](./image/K8/minikube-start.png)
 
 #### ✅ Vérifier le cluster
 
