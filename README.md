@@ -273,6 +273,12 @@ curl -X DELETE http://localhost:3000/users/1
 #### Build image
 ![Build image](image/4-docker-image/build.png)
 
+### Run local image
+![Run local image](image/4-docker-image/runLocal.png)
+
+### Validité image
+![Validiré image](image/4-docker-image/runValide.png)
+
 #### Push image
 ![Push image](image/4-docker-image/push.png)
 
