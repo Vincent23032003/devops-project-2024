@@ -391,7 +391,7 @@ Création d'une nouvelle image appelé node-api en utilisant les fonctionnalité
 
 # 🚀 Orchestration Kubernetes avec Minikube
 
-Ce guide vous guide à travers la configuration de l'orchestration Docker utilisant Kubernetes sur Minikube. La configuration comprend le déploiement de deux services (`userapi` et `redis`) avec un stockage persistant.
+Cette partie vous montre comment configurer de l'orchestration Docker utilisant Kubernetes sur Minikube. La configuration comprend le déploiement de deux services (`userapi` et `redis`) avec un stockage persistant.
 
 ## 📋 Prérequis
 
