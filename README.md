@@ -43,7 +43,7 @@ L'application elle-même est une API de gestion d'utilisateurs permettant les op
 ⏳ Déploiement avec Istio
 ⏳ Configuration du routing et traffic shifting
 
-## Travail Réalisé
+# Travail Réalisé
 
 ### 1. Application Web
 - Développement d'une API REST complète en Node.js avec Express
@@ -388,13 +388,11 @@ Création d'une nouvelle image appelé node-api en utilisant les fonctionnalité
 
 # 🚀 6. Orchestration Kubernetes avec Minikube (KUB +3)
 
-Cette partie vous montre comment configurer de l'orchestration Docker utilisant Kubernetes sur Minikube. La configuration comprend le déploiement de deux services (`userapi` et `redis`) avec un stockage persistant.
-
 ## 📋 Prérequis
 
-- **Minikube** et **kubectl** installés sur votre machine
-- Les images Docker pour `userapi` et `redis` doivent être disponibles dans votre registre Docker local ou un registre public
-- Connaissances de base des ressources Kubernetes (pods, déploiements, services)
+- ✅ **Minikube** et **kubectl** installés sur votre machine
+- ✅ Les images Docker pour `userapi` et `redis` doivent être disponibles dans votre registre Docker local ou un registre public
+- ✅ Connaissances de base des ressources Kubernetes (pods, déploiements, services)
 
 ## 🛠️ Instructions de configuration
 
@@ -419,7 +417,6 @@ minikube start
 
 ```bash
 # Affiche les informations sur le cluster Kubernetes en cours d'exécution
-# Vous verrez l'URL du plan de contrôle et du service DNS CoreDNS
 kubectl cluster-info
 ```
 
@@ -432,11 +429,9 @@ kubectl cluster-info
 
 ```bash
 # Construit l'image Docker pour l'API utilisateur
-# Le tag 'latest' indique la version la plus récente
 docker build -t quentinc123/userapi:latest .
 
 # Construit l'image Docker pour Redis
-# Utilise l'image officielle Redis comme base
 docker build -t redis:latest .
 ```
 
@@ -446,7 +441,7 @@ docker build -t redis:latest .
 ### 3. 📝 Créer les manifestes Kubernetes
 > Action : Configuration des ressources Kubernetes nécessaires
 
-Créez les fichiers YAML Kubernetes suivants pour définir vos déploiements et services.
+Création des fichiers YAML Kubernetes pour définir les déploiements et services.
 
 #### `redis-deployment.yaml`
 
@@ -541,7 +536,7 @@ spec:
 
 #### Volume persistant et réclamation pour Redis
 
-Créez les fichiers suivants pour le volume persistant et la réclamation.
+Création les fichiers suivants pour le volume persistant et la réclamation.
 
 **`redis-pv.yaml`** :
 
@@ -641,11 +636,9 @@ kubectl port-forward service/userapi-service 3000:3000
 
 ```bash
 # Redémarre le déploiement de l'API utilisateur
-# Utile pour appliquer les changements de configuration
 kubectl rollout restart deployment/userapi-deployment
 
 # Redémarre le déploiement Redis
-# Assure que Redis redémarre proprement avec la nouvelle configuration
 kubectl rollout restart deployment/redis-deployment
 ```
 
@@ -674,11 +667,9 @@ kubectl delete -f userapi-deployment.yaml
 
 [Voir le nettoyage des ressources](./image/6-K8/cleanup.png)
 
-### 🎉 Conclusion
-
-Vous avez maintenant configuré avec succès l'orchestration Docker utilisant Kubernetes sur Minikube. Les services `userapi` et `redis` sont en cours d'exécution avec un stockage persistant, et vous pouvez tester les services localement en utilisant le transfert de port.
-
 ### 📚 Ressources utiles
+
+En cas de pépins consulter l'un des liens suivants pour vous aider ':)' :
 
 - [Documentation officielle Kubernetes](https://kubernetes.io/docs/)
 - [Documentation Minikube](https://minikube.sigs.k8s.io/docs/)
@@ -687,30 +678,25 @@ Vous avez maintenant configuré avec succès l'orchestration Docker utilisant Ku
 
 # 7. 🚀 Make a service mesh using Istio
 
-📘 Cette partie explique en détail les étapes pour créer un service mesh à l'aide d'Istio sur un cluster Kubernetes. Nous déploierons deux versions d'une application, configurerons la gestion du trafic et effectuerons un équilibrage de charge entre les versions.
-
----
-
 ## **📋 Prérequis**
-
-Avant de commencer, assurez-vous d'avoir :
 
 - ✅ **Un cluster Kubernetes** en fonctionnement (par exemple, via Minikube).
 - ✅ **Istio installé** sur votre machine et déployé dans le cluster Kubernetes.
 - ✅ Une image Docker de votre application (une seule image, avec deux versions créées via des tags différents).
 - ✅ L'utilitaire **kubectl** configuré pour interagir avec le cluster Kubernetes.
 
----
 
-### **🛠️ Étape 1 : Installer Istio dans le Cluster Kubernetes**
+## 🛠️ Instructions de configuration
 
-#### **📥 1.1 - Télécharger et installer Istio**
+### ** 🌟 Étape 1 : Installer Istio dans le Cluster Kubernetes**
+
+#### ** 📥 Télécharger et installer Istio**
 
 1. Téléchargez la version d'Istio compatible avec votre système d'exploitation (à titre d'exemple : `istio-1.24.2-win-amd64.zip`).
 2. Extrayez le contenu de l'archive dans un répertoire.
 3. Ajoutez le chemin du binaire `istioctl` à votre variable d'environnement `PATH`.
 
-#### **✨ 1.2 - Vérifier l'installation d'Istio**
+#### ** ✅ Vérifier l'installation d'Istio**
 
 Exécutez la commande suivante pour confirmer qu'Istio est correctement installé :
 
@@ -720,7 +706,7 @@ istioctl version
 
 Vous devriez voir une sortie indiquant la version du client Istio.
 
-#### **🚀 1.3 - Déployer Istio dans le cluster**
+#### ** 🚦 Déployer Istio dans le cluster**
 
 1. Utilisez Istio pour déployer les composants de base dans le namespace `istio-system` :
 
@@ -738,13 +724,13 @@ Vous devriez voir une sortie indiquant la version du client Istio.
 
 [📸 Voir capture d'écran](image/7-istio/installation-verification.png)
 
----
 
-### **📦 Étape 2 : Déployer les Versions de l'Application**
+
+### **2. 📦 Déployer les Versions de l'Application**
 
 Nous allons déployer deux versions de l'application (à partir de la même image Docker avec des tags différents).
 
-#### **📝 2.1 - Créer les fichiers YAML des déploiements**
+#### ** 📝 Créer les fichiers YAML des déploiements**
 
 #### **`userapi-v1-deployment.yaml`**
 
@@ -820,7 +806,7 @@ spec:
       targetPort: 3000
 ```
 
-### **🚀 2.2 - Appliquer les fichiers YAML**
+### ** ⚙️ Appliquer les fichiers YAML**
 
 Déployez les ressources dans le cluster :
 
@@ -839,11 +825,11 @@ kubectl get services
 
 [📸 Voir capture d'écran](image/7-istio/deployments-verification.png)
 
----
 
-### **🌐 Étape 3 : Configurer le Service Mesh avec Istio**
 
-#### **🔧 3.1 - Ajouter un Gateway pour l'Application**
+### **3. 🌐 Configurer le Service Mesh avec Istio**
+
+#### **Ajouter un Gateway pour l'Application**
 
 Créez un Gateway pour exposer l'application au trafic externe.
 
@@ -874,7 +860,7 @@ kubectl apply -f userapi-gateway.yaml
 
 [📸 Voir capture d'écran](image/7-istio/gateway-creation.png)
 
-#### **🛣️ 3.2 - Créer un VirtualService pour le Routage**
+#### **Créer un VirtualService pour le Routage**
 
 Configurez un routage initial à 50%-50% entre `v1` et `v2`.
 
@@ -910,7 +896,7 @@ kubectl apply -f userapi-virtualservice.yaml
 
 [📸 Voir capture d'écran](image/7-istio/virtualservice-creation.png)
 
-#### **🎯 3.3 - Définir des DestinationRules pour les Subsets**
+#### **Définir des DestinationRules pour les Subsets**
 
 Créez des subsets pour `v1` et `v2`.
 
@@ -940,11 +926,10 @@ kubectl apply -f userapi-destinationrule.yaml
 
 [📸 Voir capture d'écran](image/7-istio/destinationrule-creation.png)
 
----
 
 ### **🧪 Étape 4 : Tester le Mesh et Modifier le Routage**
 
-#### **🔍 4.1 - Accéder au Service**
+#### ** 🔍 Accéder au Service**
 
 Exposez le service via le Gateway Istio :
 
@@ -956,7 +941,7 @@ Accédez au service sur [http://localhost:8080](http://localhost:8080).
 
 [📸 Voir capture d'écran](image/7-istio/access-service.png)
 
-#### **⚖️ 4.2 - Modifier le Routage**
+#### ** ⚖️ Modifier le Routage**
 
 Pour changer la répartition du trafic (par exemple, 80% `v1` et 20% `v2`), mettez à jour le VirtualService :
 
@@ -981,7 +966,6 @@ kubectl apply -f userapi-virtualservice.yaml
 
 [📸 Voir capture d'écran](image/7-istio/modify-routing.png)
 
----
 
 ### **🧹 Étape 5 : Nettoyer les Ressources**
 
@@ -998,9 +982,6 @@ kubectl delete -f userapi-v2-deployment.yaml
 
 [📸 Voir capture d'écran](image/7-istio/cleanup-resources.png)
 
----
-
-✨ Cette documentation fournit les étapes complètes pour configurer un service mesh avec Istio et gérer le trafic entre différentes versions d'une application.
 
 
 
