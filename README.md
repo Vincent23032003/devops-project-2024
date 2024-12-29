@@ -1,17 +1,17 @@
 # DevOps Project 2024
 
-## 📑 Sommaire
+## 📑 Table des matières
 1. [Introduction](#introduction)
 2. [Prérequis](#prérequis)
 3. [Installation](#installation)
 4. [Les 7 Composants](#les-7-composants)
-   - [1. Application Web](#1-application-web)
-   - [2. CI/CD Pipeline](#2-cicd-pipeline)
-   - [3. Infrastructure as Code](#3-infrastructure-as-code)
-   - [4. Docker](#4-docker)
-   - [5. Docker Compose](#5-docker-compose)
-   - [6. Kubernetes](#6-kubernetes)
-   - [7. Service Mesh avec Istio](#7-service-mesh-avec-istio)
+   - [Application Web](#1-application-web)
+   - [CI/CD Pipeline](#2-cicd-pipeline)
+   - [Infrastructure as Code](#3-infrastructure-as-code)
+   - [Docker](#4-docker)
+   - [Docker Compose](#5-docker-compose)
+   - [Kubernetes](#6-kubernetes)
+   - [Service Mesh avec Istio](#7-service-mesh-avec-istio)
 5. [Structure du Projet](#structure-du-projet)
 6. [Liens](#liens)
 7. [Auteurs](#auteurs)
@@ -159,12 +159,16 @@ Nous avons mis l'accent sur la qualité du code avec une suite de tests complèt
    - Rapports détaillés
    - Intégration CI/CD
 
-[Voir nos tests en action](./image/1-app-web/npm_test.png)
-[Voir l'API en fonctionnement](./image/1-app-web/api_create.png)
-[Voir la lecture d'un utilisateur](./image/1-app-web/api_get.png)
-[Voir la mise à jour d'un utilisateur](./image/1-app-web/api_update.png)
-[Voir la suppression d'un utilisateur](./image/1-app-web/api_delete.png)
-[Voir le health check](./image/1-app-web/health_check.png)
+#### 📸 Captures d'écran
+
+| Fonctionnalité | Description | Capture |
+|----------------|-------------|----------|
+| Tests | Exécution des tests unitaires et d'intégration | [📷](./image/1-app-web/npm_test.png) |
+| Création | Ajout d'un nouvel utilisateur | [📷](./image/1-app-web/api_create.png) |
+| Lecture | Récupération des détails d'un utilisateur | [📷](./image/1-app-web/api_get.png) |
+| Mise à jour | Modification des informations utilisateur | [📷](./image/1-app-web/api_update.png) |
+| Suppression | Suppression d'un utilisateur | [📷](./image/1-app-web/api_delete.png) |
+| Health Check | Vérification de l'état de l'application | [📷](./image/1-app-web/health_check.png) |
 
 ### 2. CI/CD Pipeline
 
@@ -220,8 +224,12 @@ Notre pipeline suit un processus en plusieurs étapes :
    - Tests de smoke
    - Vérification du déploiement
 
-[Voir notre pipeline en action](./image/2-ci-cd/github_actions.png)
-[Voir le déploiement réussi](./image/2-ci-cd/heroku_deployment.png)
+#### 📸 Captures d'écran
+
+| Étape | Description | Capture |
+|-------|-------------|----------|
+| GitHub Actions | Pipeline d'intégration continue | [📷](./image/2-ci-cd/github_actions.png) |
+| Déploiement | Déploiement réussi sur Heroku | [📷](./image/2-ci-cd/heroku_deployment.png) |
 
 ### 3. Infrastructure as Code
 
@@ -312,8 +320,13 @@ Notre configuration Ansible est organisée en plusieurs playbooks :
            enabled: yes
    ```
 
-[Voir la VM en action](./image/3-iac/vagrant_status.png)
-[Voir le provisioning Ansible](./image/3-iac/ansible_provisioning.png)
+#### 📸 Captures d'écran
+
+| Composant | Description | Capture |
+|-----------|-------------|----------|
+| Vagrant | État de la machine virtuelle | [📷](./image/3-iac/vagrant_status.png) |
+| Ansible | Résultat du provisioning | [📷](./image/3-iac/ansible_provisioning.png) |
+| Application | Accès à l'application via port forwarding | [📷](./image/3-iac/app_acces.png) |
 
 ### 4. Docker
 
@@ -354,11 +367,15 @@ CMD ["npm", "start"]
    - Variables d'environnement
    - Gestion des secrets
 
-[Voir le build multi-stage](./image/4-docker-image/build.png)
-[Voir notre image sur Docker Hub](./image/4-docker-image/dockerHub.png)
-[Voir le push vers Docker Hub](./image/4-docker-image/push.png)
-[Voir le test local](./image/4-docker-image/runLocal.png)
-[Voir la validation du fonctionnement](./image/4-docker-image/runValide.png)
+#### 📸 Captures d'écran
+
+| Étape | Description | Capture |
+|-------|-------------|----------|
+| Build | Construction de l'image Docker | [📷](./image/4-docker-image/build.png) |
+| Registry | Image publiée sur Docker Hub | [📷](./image/4-docker-image/dockerHub.png) |
+| Push | Publication de l'image | [📷](./image/4-docker-image/push.png) |
+| Test | Test local de l'image | [📷](./image/4-docker-image/runLocal.png) |
+| Validation | Vérification du fonctionnement | [📷](./image/4-docker-image/runValide.png) |
 
 ### 5. Docker Compose
 
@@ -415,16 +432,18 @@ volumes:
    - Configuration optimisée
    - Réseau dédié
 
-[Voir les services en action](./image/5-docker-compose/serveur-running.png)
-[Voir les tests de l'API](./image/5-docker-compose/curlSnippet.png)
-[Voir le build des services](./image/5-docker-compose/build.png)
-[Voir le push vers Docker Hub](./image/5-docker-compose/push.png)
-[Voir l'image sur Docker Hub](./image/5-docker-compose/dockerHub.png)
-[Voir le démarrage des services](./image/5-docker-compose/docker-compose-up.png)
-[Voir les services en cours d'exécution](./image/5-docker-compose/serveur-running.png)
-[Voir le test avec curl](./image/5-docker-compose/curlSnippet.png)
-[Voir la création d'un utilisateur](./image/5-docker-compose/creationUserCurl.png)
-[Voir la vérification de la création](./image/5-docker-compose/verificationUserCreation.png)
+#### 📸 Captures d'écran
+
+| Étape | Description | Capture |
+|-------|-------------|----------|
+| Build | Construction des services | [📷](./image/5-docker-compose/build.png) |
+| Push | Publication sur Docker Hub | [📷](./image/5-docker-compose/push.png) |
+| Registry | Image sur Docker Hub | [📷](./image/5-docker-compose/dockerHub.png) |
+| Démarrage | Lancement des services | [📷](./image/5-docker-compose/docker-compose-up.png) |
+| Services | Services en cours d'exécution | [📷](./image/5-docker-compose/serveur-running.png) |
+| Test API | Test avec curl | [📷](./image/5-docker-compose/curlSnippet.png) |
+| Création | Ajout d'un utilisateur | [📷](./image/5-docker-compose/creationUserCurl.png) |
+| Vérification | Confirmation de la création | [📷](./image/5-docker-compose/verificationUserCreation.png) |
 
 ### 6. Kubernetes
 
@@ -493,16 +512,19 @@ Notre déploiement Kubernetes est configuré pour la haute disponibilité et la 
        path: /data/redis
    ```
 
-[Voir l'état du cluster](./image/6-K8/cluster-info.png)
-[Voir les déploiements](./image/6-K8/deployment-status.png)
-[Voir le démarrage de Minikube](./image/6-K8/minikube-start.png)
-[Voir le build de l'image](./image/6-K8/docker-build.png)
-[Voir le build de l'image Redis](./image/6-K8/docker-build-redis.png)
-[Voir le déploiement des manifestes](./image/6-K8/manifests-deployment.png)
-[Voir l'état des déploiements](./image/6-K8/deployment-status.png)
-[Voir le redémarrage des déploiements](./image/6-K8/deployment-restart.png)
-[Voir l'interface utilisateur](./image/6-K8/userapi-interface.png)
-[Voir le nettoyage des ressources](./image/6-K8/cleanup.png)
+#### 📸 Captures d'écran
+
+| Étape | Description | Capture |
+|-------|-------------|----------|
+| Minikube | Démarrage du cluster local | [📷](./image/6-K8/minikube-start.png) |
+| Cluster | Information sur le cluster | [📷](./image/6-K8/cluster-info.png) |
+| Build API | Construction de l'image API | [📷](./image/6-K8/docker-build.png) |
+| Build Redis | Construction de l'image Redis | [📷](./image/6-K8/docker-build-redis.png) |
+| Déploiement | Application des manifestes | [📷](./image/6-K8/manifests-deployment.png) |
+| État | État des déploiements | [📷](./image/6-K8/deployment-status.png) |
+| Redémarrage | Redémarrage des services | [📷](./image/6-K8/deployment-restart.png) |
+| Interface | Interface utilisateur | [📷](./image/6-K8/userapi-interface.png) |
+| Nettoyage | Suppression des ressources | [📷](./image/6-K8/cleanup.png) |
 
 ### 7. Service Mesh avec Istio
 
@@ -564,8 +586,11 @@ istioctl verify-install
          version: v2
    ```
 
-[Voir l'installation d'Istio](./image/7-istio/istio-install.png)
-[Voir la configuration du routage](./image/7-istio/virtualservice-creation.png)
+#### 📸 Captures d'écran
+
+| Étape | Description | Capture |
+|-------|-------------|----------|
+| Installation | Installation d'Istio | [📷](./image/7-istio/istio-install.png) |
 
 ## 📁 Structure du Projet
 
