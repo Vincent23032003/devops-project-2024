@@ -1,1086 +1,596 @@
-# Projet DevOps 2024
+# DevOps Project 2024
 
-## Description du Projet
-Ce projet s'inscrit dans le cadre du cours DevOps à l'école ECE Paris. L'objectif est de mettre en place une application web moderne en suivant les meilleures pratiques DevOps, notamment :
+## 📑 Sommaire
+1. [Introduction](#introduction)
+2. [Prérequis](#prérequis)
+3. [Installation](#installation)
+4. [Les 7 Composants](#les-7-composants)
+   - [1. Application Web](#1-application-web)
+   - [2. CI/CD Pipeline](#2-cicd-pipeline)
+   - [3. Infrastructure as Code](#3-infrastructure-as-code)
+   - [4. Docker](#4-docker)
+   - [5. Docker Compose](#5-docker-compose)
+   - [6. Kubernetes](#6-kubernetes)
+   - [7. Service Mesh avec Istio](#7-service-mesh-avec-istio)
+5. [Structure du Projet](#structure-du-projet)
+6. [Liens](#liens)
+7. [Auteurs](#auteurs)
 
-- **Développement** : Application Node.js/Express avec API REST et base de données Redis
-- **Qualité** : Tests automatisés, intégration continue
-- **Déploiement** : Conteneurisation avec Docker, orchestration avec Kubernetes
-- **Infrastructure** : Infrastructure as Code avec Vagrant et Ansible
-- **Monitoring** : Service Mesh avec Istio pour la gestion du trafic et la résilience
+## 🚀 Introduction
 
-L'application elle-même est une API de gestion d'utilisateurs permettant les opérations CRUD (Create, Read, Update, Delete), servant de support pour démontrer l'ensemble de la chaîne DevOps, du développement à la production.
+Dans le cadre de notre formation à l'ECE Paris, nous avons développé un projet DevOps complet qui met en œuvre les meilleures pratiques de l'industrie. Ce projet consiste en une API REST de gestion d'utilisateurs, construite avec Node.js et Redis, et déployée à travers une chaîne DevOps complète.
 
-## État d'Avancement du Projet
+Notre objectif était de créer une application moderne qui démontre l'utilisation des technologies DevOps essentielles : du développement au déploiement, en passant par la conteneurisation et l'orchestration. Nous avons mis l'accent sur l'automatisation, la scalabilité et la maintenabilité du code.
+
+## ⚡ Prérequis
+
+Pour exécuter ce projet dans son intégralité, vous aurez besoin des éléments suivants installés sur votre machine :
+
+- **Node.js (v14 ou supérieur)**
+  - Environnement d'exécution JavaScript
+  - npm pour la gestion des dépendances
+
+- **Redis**
+  - Base de données en mémoire
+  - Utilisée pour le stockage des données utilisateurs
+
+- **Docker & Docker Compose**
+  - Docker pour la conteneurisation
+  - Docker Compose pour l'orchestration locale
+
+- **Kubernetes (Minikube)**
+  - Orchestrateur de conteneurs
+  - Minikube pour le développement local
+
+- **Istio**
+  - Service Mesh pour Kubernetes
+  - Gestion avancée du trafic
+
+- **Vagrant & VirtualBox**
+  - Vagrant pour la gestion des VM
+  - VirtualBox comme hyperviseur
+
+## 🔧 Installation
+
+Nous avons conçu le processus d'installation pour être aussi simple et automatisé que possible. Voici les étapes détaillées :
+
+1. **Cloner le repository**
+   ```bash
+   git clone https://github.com/Vincent23032003/devops-project-2024.git
+   cd devops-project-2024
+   ```
+   Cette commande récupère la dernière version du code depuis GitHub.
+
+2. **Installer les dépendances**
+   ```bash
+   cd userapi
+   npm install
+   ```
+   Cette étape installe toutes les dépendances Node.js nécessaires au projet.
+
+3. **Lancer les tests**
+   ```bash
+   npm test
+   ```
+   Exécute la suite complète de tests pour vérifier que tout fonctionne correctement.
+
+4. **API Endpoints**
+   Notre API expose les endpoints suivants pour la gestion des utilisateurs :
+
+   | Méthode | Endpoint | Description | Exemple de payload |
+   |---------|----------|-------------|-------------------|
+   | GET | `/health` | Vérifie l'état de l'application | - |
+   | GET | `/` | Page d'accueil avec documentation | - |
+   | POST | `/users` | Créer un utilisateur | `{"username": "john", "email": "john@example.com"}` |
+   | GET | `/users/:id` | Obtenir les détails d'un utilisateur | - |
+   | PUT | `/users/:id` | Mettre à jour un utilisateur | `{"email": "new.email@example.com"}` |
+   | DELETE | `/users/:id` | Supprimer un utilisateur | - |
+
+## 🛠️ Les 7 Composants
 
 ### 1. Application Web
-✅ API CRUD pour les utilisateurs
-✅ Stockage dans Redis
-✅ Tests (unit, API, configuration, connection)
-✅ Endpoint health check
 
-### 2. Pipeline CI/CD
-✅ Configuration avec GitHub Actions
-✅ Tests automatisés
-✅ Déploiement configuré
+Notre application web représente le cœur du projet. Nous avons choisi des technologies modernes et robustes pour construire une API REST performante et facilement maintenable.
+
+#### Technologies Utilisées
+
+Nous avons sélectionné avec soin notre stack technologique :
+
+- **Node.js et Express**
+  - Framework web rapide et minimaliste
+  - Support natif de l'asynchrone
+  - Grande communauté et écosystème riche
+
+- **Redis**
+  - Base de données en mémoire ultra-rapide
+  - Parfait pour le stockage de sessions
+  - Support des structures de données complexes
+
+- **Jest**
+  - Framework de test complet
+  - Support du code coverage
+  - Mocking intégré
+
+#### Fonctionnalités Implémentées
+
+Notre API offre un ensemble complet de fonctionnalités :
+
+1. **API REST CRUD**
+   - Endpoints bien documentés
+   - Validation des données avec Joi
+   - Gestion des erreurs standardisée
+
+2. **Validation des Données**
+   - Schémas de validation stricts
+   - Messages d'erreur clairs
+   - Sanitization des inputs
+
+3. **Gestion des Erreurs**
+   - Middleware d'erreur centralisé
+   - Codes HTTP appropriés
+   - Messages d'erreur détaillés
+
+4. **Monitoring**
+   - Endpoint de health check
+   - Métriques de performance
+   - Logs structurés
+
+#### Tests Approfondis
+
+Nous avons mis l'accent sur la qualité du code avec une suite de tests complète :
+
+1. **Tests Unitaires**
+   - Tests des opérations Redis
+   - Validation des modèles
+   - Helpers et utilitaires
+
+2. **Tests d'Intégration**
+   - Tests end-to-end des endpoints
+   - Scénarios complexes
+   - Tests de charge
+
+3. **Tests de Configuration**
+   - Validation des variables d'environnement
+   - Tests de connexion Redis
+   - Tests de middleware
+
+4. **Couverture de Code**
+   - Objectif > 80% atteint
+   - Rapports détaillés
+   - Intégration CI/CD
+
+[Voir nos tests en action](./image/1-app-web/npm_test.png)
+[Voir l'API en fonctionnement](./image/1-app-web/api_create.png)
+
+### 2. CI/CD Pipeline
+
+Notre pipeline CI/CD, construit avec GitHub Actions, automatise l'intégration et le déploiement de notre application.
+
+#### Configuration GitHub Actions
+
+```yaml
+name: CI/CD Pipeline
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install Dependencies
+        run: npm ci
+      - name: Run Tests
+        run: npm test
+```
+
+#### Étapes du Pipeline
+
+Notre pipeline suit un processus en plusieurs étapes :
+
+1. **Installation et Configuration**
+   - Setup de l'environnement Node.js
+   - Installation des dépendances
+   - Configuration de Redis pour les tests
+
+2. **Phase de Test**
+   - Linting avec ESLint
+   - Tests unitaires
+   - Tests d'intégration
+   - Génération des rapports
+
+3. **Build Docker**
+   - Construction de l'image
+   - Tests de l'image
+   - Push vers Docker Hub
+
+4. **Déploiement**
+   - Déploiement sur Heroku
+   - Tests de smoke
+   - Vérification du déploiement
+
+[Voir notre pipeline en action](./image/2-ci-cd/github_actions.png)
+[Voir le déploiement réussi](./image/2-ci-cd/heroku_deployment.png)
 
 ### 3. Infrastructure as Code
-✅ Configuration Vagrant (1 VM Linux)
-✅ Provisioning avec Ansible (installation de runtime, DB, application)
+
+Notre infrastructure est entièrement gérée par code, utilisant Vagrant pour la virtualisation et Ansible pour le provisioning.
+
+#### Configuration Vagrant
+
+Notre Vagrantfile configure une VM Ubuntu optimisée :
+
+```ruby
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/focal64"
+  
+  # Configuration système
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "2048"
+    vb.cpus = 2
+  end
+
+  # Networking
+  config.vm.network "forwarded_port", guest: 3000, host: 3000
+  
+  # Shared folders
+  config.vm.synced_folder ".", "/vagrant_data"
+  
+  # Provisioning
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "playbook.yml"
+  end
+end
+```
+
+Cette configuration :
+- Utilise Ubuntu 20.04 LTS
+- Alloue 2GB de RAM et 2 CPU
+- Configure le port forwarding
+- Monte les dossiers partagés
+- Intègre Ansible pour le provisioning
+
+#### Ansible Playbooks
+
+Notre configuration Ansible est organisée en plusieurs playbooks :
+
+1. **Installation Système**
+   ```yaml
+   - name: System Setup
+     hosts: all
+     tasks:
+       - name: Update apt cache
+         apt: update_cache=yes
+       - name: Install system dependencies
+         apt:
+           name: "{{ item }}"
+           state: present
+         with_items:
+           - curl
+           - git
+           - build-essential
+   ```
+
+2. **Configuration Node.js**
+   ```yaml
+   - name: Node.js Setup
+     hosts: all
+     tasks:
+       - name: Add NodeSource repository
+         shell: |
+           curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+       - name: Install Node.js
+         apt:
+           name: nodejs
+           state: present
+   ```
+
+3. **Configuration Redis**
+   ```yaml
+   - name: Redis Setup
+     hosts: all
+     tasks:
+       - name: Install Redis
+         apt:
+           name: redis-server
+           state: present
+       - name: Start Redis
+         service:
+           name: redis-server
+           state: started
+           enabled: yes
+   ```
+
+[Voir la VM en action](./image/3-iac/vagrant_status.png)
+[Voir le provisioning Ansible](./image/3-iac/ansible_provisioning.png)
 
 ### 4. Docker
-✅ Création du Dockerfile
-✅ Push sur Docker Hub
 
-### 5. Docker Compose
-⏳ Création du docker-compose.yml
+Notre configuration Docker est optimisée pour la production avec un build multi-stage.
 
-### 6. Kubernetes
-⏳ Installation de Minikube
-⏳ Création des manifests YAML (deployments, services, volumes)
+#### Dockerfile Optimisé
 
-### 7. Service Mesh avec Istio
-⏳ Déploiement avec Istio
-⏳ Configuration du routing et traffic shifting
-
-# Travail Réalisé
-
-### 1. Application Web
-- Développement d'une API REST complète en Node.js avec Express
-- Implémentation des opérations CRUD pour les utilisateurs
-- Stockage des données dans Redis
-- Tests complets :
-  - Tests unitaires des opérations Redis
-  - Tests d'API pour tous les endpoints
-  - Tests de configuration et connexion
-  - Tests de l'endpoint de santé
-
-### 2. Pipeline CI/CD
-- Mise en place d'un pipeline avec GitHub Actions comprenant :
-  - Build et tests automatisés
-  - Déploiement automatique avec Docker Compose
-  - Intégration de Redis pour les tests
-
-### 3. Infrastructure as Code
-- Configuration d'une VM Ubuntu 20.04 LTS avec Vagrant
-- Provisioning automatisé avec Ansible incluant :
-  - Installation de Node.js 18.x
-  - Installation et configuration de Redis
-  - Déploiement automatique de l'application
-  - Configuration des ports (3000 pour l'API, 6379 pour Redis)
-  - Vérification de la santé de l'application
-
-Pour démarrer l'environnement de développement avec Vagrant :
-
-1. Assurez-vous d'avoir installé :
-   - VirtualBox
-   - Vagrant
-
-2. Lancez l'environnement :
-```bash
-cd iac
-vagrant up
-```
-
-3. Vérifiez que l'application fonctionne :
-```bash
-# Depuis la VM
-vagrant ssh -c "curl http://localhost:3000/health"
-
-# Depuis votre machine hôte
-curl http://localhost:3000/health
-```
-
-4. Pour arrêter l'environnement :
-```bash
-vagrant halt    # Arrêter la VM
-vagrant destroy # Supprimer la VM
-```
-
-### 4. Construction et publication de l'image Docker de l'application
-
-#### Objectif
-Cette étape consiste à :
-1. Construire une image Docker fonctionnelle pour l'application.
-2. S'assurer que seuls les fichiers nécessaires sont inclus dans l'image.
-3. Publier l'image sur Docker Hub pour la rendre accessible.
-
----
-
-#### Structure du projet
-Le projet contient les éléments suivants :
-- **Dockerfile** : Définit comment l'image Docker est construite.
-- **.dockerignore** : Spécifie les fichiers et dossiers à exclure de l'image Docker.
-- **Code source** : L'application est un API utilisateur avec des fonctionnalités CRUD connectée à une base de données Redis.
-
----
-
-## Étapes réalisées
-
-### 1. Création d'un fichier `.dockerignore`
-Le fichier `.dockerignore` est utilisé pour exclure les fichiers inutiles du contexte Docker, réduisant ainsi la taille de l'image. Voici son contenu :
-
-```bash
-plaintext
-node_modules
-.git
-.dockerignore
-Dockerfile
-README.md
-.log
-```
-
-### 2. Écriture du Dockerfile
-
-```bash
-# Utilisation d'une image de base officielle Node.js
-FROM node:16
-
-# Définition du répertoire de travail dans le conteneur
+```dockerfile
+# Build stage
+FROM node:14-alpine AS builder
 WORKDIR /app
-
-# Copier les fichiers nécessaires pour installer les dépendances
 COPY package*.json ./
-
-# Installation des dépendances
-RUN npm install
-
-# Copier tout le code source de l'application
+RUN npm ci --only=production
 COPY . .
 
-# Exposer le port 3000
+# Production stage
+FROM node:14-alpine
+WORKDIR /app
+COPY --from=builder /app ./
 EXPOSE 3000
-
-# Commande pour démarrer l'application
 CMD ["npm", "start"]
 ```
-### 3. Construction de l'image Docker
 
-Pour construire l'image Docker, la commande suivante a été utilisée :
+#### Optimisations Implémentées
 
-```bash
-docker build -t vincennnt/userapi:latest .
-```
+1. **Multi-stage Build**
+   - Séparation des étapes de build
+   - Réduction de la taille finale
+   - Optimisation des layers
 
-Cette commande a :
+2. **Base Alpine**
+   - Image légère
+   - Sécurité renforcée
+   - Performance optimale
 
-Créé une image Docker nommée userapi sous mon compte Docker Hub vincennnt.
-Utilisé le contexte actuel (.) pour inclure uniquement les fichiers nécessaires.
+3. **Configuration**
+   - .dockerignore optimisé
+   - Variables d'environnement
+   - Gestion des secrets
 
-### 4. Test local de l'image Docker
+[Voir le build multi-stage](./image/4-docker-image/build.png)
+[Voir notre image sur Docker Hub](./image/4-docker-image/dockerHub.png)
 
-Avant de publier l'image, elle a été testée en local :
+### 5. Docker Compose
 
-```bash
-docker run --name userapi --network vincent23032003Network -p 3000:3000 vincennnt/userapi:latest
-```
-Le conteneur a été connecté au réseau Docker pour interagir avec Redis.
-Les logs ont confirmé que l'application s'est connectée correctement à Redis et a démarré.
+Notre configuration Docker Compose orchestre plusieurs services en local.
 
-### 5. Publication de l'image sur Docker Hub
+#### Configuration Détaillée
 
-L'image Docker a été publiée sur Docker Hub pour permettre un déploiement ultérieur :
-
-```bash
-docker push vincennnt/userapi:latest
-```
-Avant cela, un dépôt nommé userapi a été créé sur Docker Hub pour correspondre au nom de l'image.
-
-### Résultat
-L'image Docker est maintenant disponible sur Docker Hub : Lien vers Docker Hub (remplacer par le lien réel).
-L'application peut être déployée depuis Docker Hub en utilisant :
-```bash
-docker pull vincennnt/userapi:latest
-```
-
-
-### 5.  Orchestration avec Docker Compose
-
-Dans cette partie, nous utilisons Docker Compose pour orchestrer notre application Node.js et sa dépendance Redis. Docker Compose simplifie le déploiement en coordonnant les conteneurs nécessaires à l'exécution de l'application.
-
-## Prérequis
-Avant de commencer, assurez-vous d'avoir :
-- [Docker](https://www.docker.com/products/docker-desktop) installé sur votre machine.
-- [Docker Compose](https://docs.docker.com/compose/) inclus dans votre installation Docker.
-
----
-
-## Création du fichier docker-compose.yaml 
-
-Voici sa structure :
-```bash
+```yaml
+version: '3.8'
 services:
-  app:
-    build:
-      context: ./userapi
-      dockerfile: Dockerfile
-    image: <dockerhub-username>/node-api
+  api:
+    build: .
     ports:
       - "3000:3000"
     environment:
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
     depends_on:
       - redis
-
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  
   redis:
-    image: redis:latest
-    ports:
-      - "6379:6379"
+    image: redis:alpine
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  redis_data:
 ```
----
 
-## Quelques commandes importante de Docker compose
+#### Services Configurés
 
-Pour lancer les services :
+1. **API Node.js**
+   - Build depuis Dockerfile local
+   - Variables d'environnement configurées
+   - Healthcheck intégré
+   - Redémarrage automatique
+
+2. **Redis**
+   - Image officielle Alpine
+   - Persistance des données
+   - Configuration optimisée
+   - Réseau dédié
+
+[Voir les services en action](./image/5-docker-compose/serveur-running.png)
+[Voir les tests de l'API](./image/5-docker-compose/curlSnippet.png)
+
+### 6. Kubernetes
+
+Notre déploiement Kubernetes est configuré pour la haute disponibilité et la scalabilité.
+
+#### Manifestes Kubernetes
+
+1. **Deployment API**
+   ```yaml
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: userapi
+   spec:
+     replicas: 3
+     selector:
+       matchLabels:
+         app: userapi
+     template:
+       metadata:
+         labels:
+           app: userapi
+       spec:
+         containers:
+         - name: userapi
+           image: vincennnt/userapi:latest
+           ports:
+           - containerPort: 3000
+           livenessProbe:
+             httpGet:
+               path: /health
+               port: 3000
+           readinessProbe:
+             httpGet:
+               path: /health
+               port: 3000
+   ```
+
+2. **Service**
+   ```yaml
+   apiVersion: v1
+   kind: Service
+   metadata:
+     name: userapi
+   spec:
+     type: LoadBalancer
+     ports:
+     - port: 80
+       targetPort: 3000
+     selector:
+       app: userapi
+   ```
+
+3. **Persistent Volume**
+   ```yaml
+   apiVersion: v1
+   kind: PersistentVolume
+   metadata:
+     name: redis-pv
+   spec:
+     capacity:
+       storage: 1Gi
+     accessModes:
+       - ReadWriteOnce
+     hostPath:
+       path: /data/redis
+   ```
+
+[Voir l'état du cluster](./image/6-K8/cluster-info.png)
+[Voir les déploiements](./image/6-K8/deployment-status.png)
+
+### 7. Service Mesh avec Istio
+
+Notre configuration Istio implémente des patterns avancés de gestion du trafic.
+
+#### Installation et Configuration
 
 ```bash
-docker-compose up --build
+# Installation d'Istio
+istioctl install --set profile=demo -y
+kubectl label namespace default istio-injection=enabled
+
+# Vérification
+istioctl verify-install
 ```
 
-Pour vérifier les logs :
-```bash
-docker-compose logs -f
-```
+#### Configuration du Routage
 
-Pour tester l'application :
-```bash
-# Ajouter un utilisateur
-curl -X POST -H "Content-Type: application/json" -d '{"id":"69","name":"John","email":"john@cena.com"}' http://localhost:3000/users
+1. **VirtualService**
+   ```yaml
+   apiVersion: networking.istio.io/v1alpha3
+   kind: VirtualService
+   metadata:
+     name: userapi
+   spec:
+     hosts:
+     - "*"
+     gateways:
+     - userapi-gateway
+     http:
+     - route:
+       - destination:
+           host: userapi
+           subset: v1
+         weight: 90
+       - destination:
+           host: userapi
+           subset: v2
+         weight: 10
+   ```
 
-# Récupérer un utilisateur
-curl http://localhost:3000/users/69
+2. **DestinationRule**
+   ```yaml
+   apiVersion: networking.istio.io/v1alpha3
+   kind: DestinationRule
+   metadata:
+     name: userapi
+   spec:
+     host: userapi
+     trafficPolicy:
+       loadBalancer:
+         simple: ROUND_ROBIN
+     subsets:
+     - name: v1
+       labels:
+         version: v1
+     - name: v2
+       labels:
+         version: v2
+   ```
 
-```
+[Voir l'installation d'Istio](./image/7-istio/installation-verification.png)
+[Voir la configuration du routage](./image/7-istio/virtualservice-creation.png)
 
-Pour arrêter les services :
-```bash
-docker-compose down
-```
+## 📁 Structure du Projet
 
-## Résultat attendu
+Notre projet suit une structure modulaire et organisée :
 
-À la fin de cette partie :
-
-Les conteneurs app et redis fonctionnent correctement ensemble.
-L'application est accessible sur http://localhost:3000.
-Redis stocke et gère les données utilisateur via l'application.
-
-## Structure du Projet
 ```
 .
 ├── .github/
 │   └── workflows/          # Configuration CI/CD
 ├── userapi/
 │   ├── src/               # Code source de l'application
-│   ├── test/              # Tests
-│   ├── package.json       # Dépendances
-│   └── CHANGELOG.md       # Journal des modifications
-├── iac/                   # Pour Ansible
-├── k8s/                   # Pour Kubernetes (à venir)
-├── istio/                 # Pour Istio (à venir)
-├── image/                 # Screenshots
-└── docker-compose.yaml    # Configuration Docker Compose
+│   │   ├── controllers/   # Logique métier
+│   │   ├── models/       # Modèles de données
+│   │   ├── routes/       # Définition des routes
+│   │   └── utils/        # Utilitaires
+│   ├── test/             # Tests
+│   ├── package.json      # Dépendances
+│   └── CHANGELOG.md      # Journal des modifications
+├── iac/
+│   ├── Vagrantfile       # Configuration VM
+│   └── playbooks/        # Playbooks Ansible
+├── k8s/                  # Manifestes Kubernetes
+├── istio/                # Configuration Istio
+├── image/                # Screenshots
+└── docker-compose.yaml   # Orchestration Docker
 ```
 
-## Screenshots
+## 🔗 Liens
 
-### 1. Application Web et Tests (APP +2)
+- [Repository GitHub](https://github.com/Vincent23032003/devops-project-2024)
+- [Image Docker Hub](https://hub.docker.com/r/vincennnt/userapi)
+- [Application Heroku](https://devops-userapi-2024.herokuapp.com)
 
-#### Tests Unitaires et d'Intégration
-![Tests Réussis](image/1-app-web/npm_test.png)
+## 👥 Auteurs
 
-*✅ Exécution réussie de tous les tests unitaires et d'intégration*
+- **Vincent BARÉ** - Cyber Gr 01
+  - Configuration Kubernetes
+  - Intégration Istio
+  - CI/CD Pipeline
 
-#### API Endpoints - Opérations CRUD
+- **Louis DECOURTIS** - Cyber Gr 01
+  - Développement API
+  - Tests automatisés
+  - Documentation
 
-| Opération | Endpoint | Description | Capture d'écran |
-|-----------|----------|-------------|-----------------|
-| **CREATE** | `POST /users` | Création d'un utilisateur | ![Création](image/1-app-web/api_create.png) |
-| **READ** | `GET /users/:id` | Lecture des détails | ![Lecture](image/1-app-web/api_get.png) |
-| **UPDATE** | `PUT /users/:id` | Mise à jour des informations | ![Mise à jour](image/1-app-web/api_update.png) |
-| **DELETE** | `DELETE /users/:id` | Suppression d'un utilisateur | ![Suppression](image/1-app-web/api_delete.png) |
+- **Quentin CARMINOT** - Cyber Gr 01
+  - Infrastructure as Code
+  - Docker
+  - Monitoring
 
-```bash
-# Création d'un utilisateur
-curl -X POST http://localhost:3000/users \
-     -H "Content-Type: application/json" \
-     -d '{"id":"1","name":"test","email":"test@test.com"}'
-
-# Lecture d'un utilisateur
-curl http://localhost:3000/users/1
-
-# Mise à jour d'un utilisateur
-curl -X PUT http://localhost:3000/users/1 \
-     -H "Content-Type: application/json" \
-     -d '{"name":"updated test"}'
-
-# Suppression d'un utilisateur
-curl -X DELETE http://localhost:3000/users/1
-```
-
-#### Health Check
-![Health Check](image/1-app-web/health_check.png)
-
-*✅ L'endpoint `/health` confirme que l'application est opérationnelle*
-
-### 2. Pipeline CI/CD (CICD +3)
-
-| Étape | Description | Capture d'écran |
-|-------|-------------|-----------------|
-| **GitHub Actions** | Pipeline d'intégration continue | ![GitHub Actions](image/2-ci-cd/github_actions.png) |
-| **Heroku** | Déploiement continu | ![Heroku Deployment](image/2-ci-cd/heroku_deployment.png) |
-
-### 3. Infrastructure as Code (IAC +3)
-
-| Composant | Description | Capture d'écran |
-|-----------|-------------|-----------------|
-| **Vagrant** | Machine virtuelle opérationnelle | ![Vagrant Status](image/3-iac/vagrant_status.png) |
-| **Ansible** | Configuration automatisée | ![Ansible Provisioning](image/3-iac/ansible_provisioning.png) |
-| **Application** | Accès via port forwarding | ![Application Access](image/3-iac/app_acces.png) |
-
-### 4. Conteneurisation Docker (D +2)
-
-#### Build image
-![Build image](image/4-docker-image/build.png)
-
-### Run local image
-![Run local image](image/4-docker-image/runLocal.png)
-
-### Validité image
-![Validiré image](image/4-docker-image/runValide.png)
-
-#### Push image
-![Push image](image/4-docker-image/push.png)
-
-#### Vérificaiton dans DockerHub
-![Docker Hub](image/4-docker-image/dockerHub.png)
-
-### 5. Orchestration Docker Compose (DC +2)
-
-Création d'une nouvelle image appelé node-api en utilisant les fonctionnalités de Docker Compose
-
-#### Build image
-![Build image](image/5-docker-compose/build.png)
-
-#### Build image
-![Push image](image/5-docker-compose/push.png)
-
-#### Vérification image
-![Verification dans docker Hub](image/5-docker-compose/dockerHub.png)
-
-#### Lancement des services
-![docker-compose-up](image/5-docker-compose/docker-compose-up.png)
-
-#### Services fonctionnels
-![Services fonctionnels](image/5-docker-compose/serveur-running.png)
-
-### Création user avec curl snippet
-![Curls snippet](image/5-docker-compose/curlSnippet.png)
-
-### Création user avec curl snippet
-![Creation user curl](image/5-docker-compose/creationUserCurl.png)
-
-### Création user avec curl snippet
-![Vérification création user curl](image/5-docker-compose/verificationUserCreation.png)
-
----
-
-# 🚀 6. Orchestration Kubernetes avec Minikube (KUB +3)
-
-## 📋 Prérequis
-
-- ✅ **Minikube** et **kubectl** installés sur votre machine
-- ✅ Les images Docker pour `userapi` et `redis` doivent être disponibles dans votre registre Docker local ou un registre public
-- ✅ Connaissances de base des ressources Kubernetes (pods, déploiements, services)
-
----
-
-## 🛠️ Instructions de configuration
-
-### 1. 🌟 Installer Minikube et démarrer le cluster
-> Action : Initialisation de l'environnement Kubernetes local
-
-#### 📥 Installer Minikube
-
-Suivez le guide officiel d'installation de [Minikube](https://minikube.sigs.k8s.io/docs/) en fonction de votre système d'exploitation.
-
-#### 🚦 Démarrer le cluster Minikube
-
-```bash
-# Démarre un cluster Kubernetes local avec les paramètres par défaut
-# Cette commande initialise un environnement Kubernetes mononode sur votre machine
-minikube start
-```
-
-[Voir le résultat](./image/6-K8/minikube-start.png)
-
-#### ✅ Vérifier le cluster
-
-```bash
-# Affiche les informations sur le cluster Kubernetes en cours d'exécution
-kubectl cluster-info
-```
-
-[Voir la sortie du cluster-info](./image/6-K8/cluster-info.png)
-
----
-
-### 2. 🐳 Dockeriser l'application
-> Action : Préparation des conteneurs pour le déploiement
-
-#### 🏗️ Construire les images Docker
-
-```bash
-# Construit l'image Docker pour l'API utilisateur
-docker build -t quentinc123/userapi:latest .
-
-# Construit l'image Docker pour Redis
-docker build -t redis:latest .
-```
-
-[Voir le processus de build Docker](./image/6-K8/docker-build.png)
-[Voir le processus de build Docker pour Redis](./image/6-K8/docker-build-redis.png)
-
----
-
-### 3. 📝 Créer les manifestes Kubernetes
-> Action : Configuration des ressources Kubernetes nécessaires
-
-Création des fichiers YAML Kubernetes pour définir les déploiements et services.
-
-#### `redis-deployment.yaml`
-
-Ce fichier définit le déploiement et le service pour le service `redis`.
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: redis-deployment
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: redis
-  template:
-    metadata:
-      labels:
-        app: redis
-    spec:
-      containers:
-      - name: redis
-        image: redis:latest
-        ports:
-        - containerPort: 6379
-```
-
-#### `redis-service.yaml`
-
-Ce fichier définit le service pour le service `redis`.
-
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: redis-service
-spec:
-  selector:
-    app: redis
-  ports:
-    - protocol: TCP
-      port: 6379
-  clusterIP: None
-```
-
-#### `userapi-deployment.yaml`
-
-Ce fichier définit le déploiement pour le service `userapi`.
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: userapi-deployment
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: userapi
-  template:
-    metadata:
-      labels:
-        app: userapi
-    spec:
-      containers:
-      - name: userapi-container
-        image: quentinc123/userapi:latest
-        ports:
-        - containerPort: 3000
-        env:
-        - name: REDIS_HOST
-          value: redis-service
-```
-
-#### `userapi-service.yaml`
-
-Ce fichier définit le service pour le service `userapi`.
-
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: userapi-service
-spec:
-  selector:
-    app: userapi
-  ports:
-    - protocol: TCP
-      port: 3000
-  clusterIP: None
-```
-
-#### Volume persistant et réclamation pour Redis
-
-Création les fichiers suivants pour le volume persistant et la réclamation.
-
-**`redis-pv.yaml`** :
-
-```yaml
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: redis-pv
-spec:
-  capacity:
-    storage: 1Gi
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: /mnt/data/redis
-```
-
-**`redis-pvc.yaml`** :
-
-```yaml
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: redis-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-```
-
----
-
-### 4. ⚙️ Appliquer les manifestes Kubernetes
-> Action : Déploiement des services dans le cluster
-
-```bash
-# Crée le volume persistant pour Redis
-# Permet de conserver les données même après un redémarrage
-kubectl apply -f redis-pv.yaml
-
-# Crée la réclamation de volume persistant
-# Lie le volume persistant à Redis
-kubectl apply -f redis-pvc.yaml
-
-# Déploie Redis avec la configuration spécifiée
-# Crée un pod Redis avec stockage persistant
-kubectl apply -f redis-deployment.yaml
-
-# Expose Redis comme un service dans le cluster
-# Permet aux autres pods de communiquer avec Redis
-kubectl apply -f redis-service.yaml
-
-# Déploie l'API utilisateur
-# Crée les pods pour l'application userapi
-kubectl apply -f userapi-deployment.yaml
-
-# Expose l'API utilisateur comme un service
-# Permet d'accéder à l'API depuis l'extérieur du cluster
-kubectl apply -f userapi-service.yaml
-```
-
-[Voir le déploiement des manifestes](./image/6-K8/manifests-deployment.png)
-
----
-
-### 5. 🔍 Vérifier les déploiements
-> Action : Validation de l'état des services déployés
-
-```bash
-# Liste tous les pods en cours d'exécution
-# Vérifie que les pods sont en état 'Running'
-kubectl get pods
-
-# Liste tous les services actifs
-# Montre les points d'accès des applications
-kubectl get services
-
-# Liste tous les déploiements
-# Affiche le nombre de répliques et leur état
-kubectl get deployments
-```
-
-[Voir l'état des déploiements](./image/6-K8/deployment-status.png)
-
----
-
-### 6. 🧪 Tester les services
-> Action : Test de l'accessibilité des services déployés
-
-```bash
-# Transfère le port 3000 du service vers localhost
-# Permet d'accéder à l'API depuis votre machine locale
-kubectl port-forward service/userapi-service 3000:3000
-```
-
-[Voir l'interface utilisateur en action](./image/6-K8/userapi-interface.png)
-
----
-
-### 7. 🔄 Redémarrer les déploiements
-> Action : Mise à jour des services en cours d'exécution
-
-```bash
-# Redémarre le déploiement de l'API utilisateur
-kubectl rollout restart deployment/userapi-deployment
-
-# Redémarre le déploiement Redis
-kubectl rollout restart deployment/redis-deployment
-```
-
-[Voir le redémarrage des déploiements](./image/6-K8/deployment-restart.png)
-
----
-
-### 8. 🧹 Nettoyer les ressources
-> Action : Suppression propre des ressources créées
-
-```bash
-# Supprime le volume persistant Redis
-# Libère l'espace de stockage alloué
-kubectl delete -f redis-pv.yaml
-
-# Supprime la réclamation de volume persistant
-# Nettoie la demande de stockage
-kubectl delete -f redis-pvc.yaml
-
-# Supprime le déploiement Redis
-# Arrête tous les pods Redis
-kubectl delete -f redis-deployment.yaml
-
-# Supprime le déploiement de l'API utilisateur
-# Arrête tous les pods de l'API
-kubectl delete -f userapi-deployment.yaml
-```
-
-[Voir le nettoyage des ressources](./image/6-K8/cleanup.png)
-
----
-
-### 📚 Ressources utiles
-
-En cas de pépins consulter l'un des liens suivants pour vous aider ':)' :
-
-- [Documentation officielle Kubernetes](https://kubernetes.io/docs/)
-- [Documentation Minikube](https://minikube.sigs.k8s.io/docs/)
-- [Guide des meilleures pratiques Kubernetes](https://kubernetes.io/docs/concepts/configuration/overview/)
-
----
-
-
-# 7. 🚀 Make a service mesh using Istio
-
-## **📋 Prérequis**
-
-- ✅ **Un cluster Kubernetes** en fonctionnement (par exemple, via Minikube).
-- ✅ **Istio installé** sur votre machine et déployé dans le cluster Kubernetes.
-- ✅ Une image Docker de votre application (une seule image, avec deux versions créées via des tags différents).
-- ✅ L'utilitaire **kubectl** configuré pour interagir avec le cluster Kubernetes.
-
----
-
-
-## 🛠️ Instructions de configuration
-
-### **1. 🌟 Installer Istio dans le Cluster Kubernetes**
-
-#### **📥 Télécharger et installer Istio**
-
-1. Téléchargez la version d'Istio compatible avec votre système d'exploitation (à titre d'exemple : `istio-1.24.2-win-amd64.zip`).
-2. Extrayez le contenu de l'archive dans un répertoire.
-3. Ajoutez le chemin du binaire `istioctl` à votre variable d'environnement `PATH`.
-
-#### **✅ Vérifier l'installation d'Istio**
-
-Exécutez la commande suivante pour confirmer qu'Istio est correctement installé :
-
-```bash
-istioctl version
-```
-
-Vous devriez voir une sortie indiquant la version du client Istio.
-
-#### **🚦 Déployer Istio dans le cluster**
-
-1. Utilisez Istio pour déployer les composants de base dans le namespace `istio-system` :
-
-   ```bash
-   istioctl install --set profile=demo -y
-   ```
-
-2. Confirmez que les pods d'Istio sont en cours d'exécution :
-
-   ```bash
-   kubectl get pods -n istio-system
-   ```
-
-   Vous devriez voir les composants principaux tels que `istiod`, `istio-ingressgateway`, et `istio-egressgateway`.
-
-[📸 Voir capture d'écran](image/7-istio/installation-verification.png)
-
----
-
-### **2.📦 Déployer les Versions de l'Application**
-
-Nous allons déployer deux versions de l'application (à partir de la même image Docker avec des tags différents).
-
-#### **📝 Créer les fichiers YAML des déploiements**
-
-#### **`userapi-v1-deployment.yaml`**
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: userapi-v1
-  labels:
-    app: userapi
-    version: v1
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: userapi
-      version: v1
-  template:
-    metadata:
-      labels:
-        app: userapi
-        version: v1
-    spec:
-      containers:
-      - name: userapi
-        image: quentinc123/userapi:v1
-        ports:
-        - containerPort: 3000
-```
-
-#### **`userapi-v2-deployment.yaml`**
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: userapi-v2
-  labels:
-    app: userapi
-    version: v2
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: userapi
-      version: v2
-  template:
-    metadata:
-      labels:
-        app: userapi
-        version: v2
-    spec:
-      containers:
-      - name: userapi
-        image: quentinc123/userapi:v2
-        ports:
-        - containerPort: 3000
-```
-
-#### **`userapi-service.yaml`**
-
-```yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: userapi
-spec:
-  selector:
-    app: userapi
-  ports:
-    - protocol: TCP
-      port: 3000
-      targetPort: 3000
-```
-
-### **⚙️ Appliquer les fichiers YAML**
-
-Déployez les ressources dans le cluster :
-
-```bash
-kubectl apply -f userapi-v1-deployment.yaml
-kubectl apply -f userapi-v2-deployment.yaml
-kubectl apply -f userapi-service.yaml
-```
-
-Confirmez que les pods et le service sont créés :
-
-```bash
-kubectl get pods
-kubectl get services
-```
-
-[📸 Voir capture d'écran](image/7-istio/deployments-verification.png)
-
----
-
-### **3. 🌐 Configurer le Service Mesh avec Istio**
-
-#### **Ajouter un Gateway pour l'Application**
-
-Créez un Gateway pour exposer l'application au trafic externe.
-
-#### **`userapi-gateway.yaml`**
-
-```yaml
-apiVersion: networking.istio.io/v1beta1
-kind: Gateway
-metadata:
-  name: userapi-gateway
-spec:
-  selector:
-    istio: ingressgateway
-  servers:
-  - port:
-      number: 80
-      name: http
-      protocol: HTTP
-    hosts:
-    - "*"
-```
-
-Appliquez ce fichier :
-
-```bash
-kubectl apply -f userapi-gateway.yaml
-```
-
-[📸 Voir capture d'écran](image/7-istio/gateway-creation.png)
-
-#### **Créer un VirtualService pour le Routage**
-
-Configurez un routage initial à 50%-50% entre `v1` et `v2`.
-
-#### **`userapi-virtualservice.yaml`**
-
-```yaml
-apiVersion: networking.istio.io/v1beta1
-kind: VirtualService
-metadata:
-  name: userapi
-spec:
-  hosts:
-  - "*"
-  gateways:
-  - userapi-gateway
-  http:
-  - route:
-    - destination:
-        host: userapi
-        subset: v1
-      weight: 50
-    - destination:
-        host: userapi
-        subset: v2
-      weight: 50
-```
-
-Appliquez ce fichier :
-
-```bash
-kubectl apply -f userapi-virtualservice.yaml
-```
-
-[📸 Voir capture d'écran](image/7-istio/virtualservice-creation.png)
-
-#### **Définir des DestinationRules pour les Subsets**
-
-Créez des subsets pour `v1` et `v2`.
-
-#### **`userapi-destinationrule.yaml`**
-
-```yaml
-apiVersion: networking.istio.io/v1beta1
-kind: DestinationRule
-metadata:
-  name: userapi
-spec:
-  host: userapi
-  subsets:
-  - name: v1
-    labels:
-      version: v1
-  - name: v2
-    labels:
-      version: v2
-```
-
-Appliquez ce fichier :
-
-```bash
-kubectl apply -f userapi-destinationrule.yaml
-```
-
-[📸 Voir capture d'écran](image/7-istio/destinationrule-creation.png)
-
----
-
-### **🧪 Étape 4 : Tester le Mesh et Modifier le Routage**
-
-#### ** 🔍 Accéder au Service**
-
-Exposez le service via le Gateway Istio :
-
-```bash
-kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80
-```
-
-Accédez au service sur [http://localhost:8080](http://localhost:8080).
-
-[📸 Voir capture d'écran](image/7-istio/access-service.png)
-
-#### ** ⚖️ Modifier le Routage**
-
-Pour changer la répartition du trafic (par exemple, 80% `v1` et 20% `v2`), mettez à jour le VirtualService :
-
-```yaml
-http:
-- route:
-  - destination:
-      host: userapi
-      subset: v1
-    weight: 80
-  - destination:
-      host: userapi
-      subset: v2
-    weight: 20
-```
-
-Appliquez le fichier :
-
-```bash
-kubectl apply -f userapi-virtualservice.yaml
-```
-
-[📸 Voir capture d'écran](image/7-istio/modify-routing.png)
-
----
-
-### **🧹 Étape 5 : Nettoyer les Ressources**
-
-Une fois les tests terminés, supprimez les ressources Istio :
-
-```bash
-kubectl delete -f userapi-gateway.yaml
-kubectl delete -f userapi-virtualservice.yaml
-kubectl delete -f userapi-destinationrule.yaml
-kubectl delete -f userapi-service.yaml
-kubectl delete -f userapi-v1-deployment.yaml
-kubectl delete -f userapi-v2-deployment.yaml
-```
-
-[📸 Voir capture d'écran](image/7-istio/cleanup-resources.png)
-
----
-
-## Installation et Utilisation
-
-### Prérequis
-- Node.js (v14 ou supérieur)
-- Redis Server
-
-### Installation
-
-1. Cloner le repository :
-```bash
-git clone https://github.com/Vincent23032003/devops-project-2024.git
-cd devops-project-2024
-```
-
-2. Installer Redis :
-```bash
-sudo apt-get install redis-server
-sudo service redis-server start
-```
-
-3. Installer les dépendances :
-```bash
-cd userapi
-npm install
-```
-
-### Tests
-Pour exécuter les tests :
-```bash
-npm test
-```
-
-### Développement
-Pour lancer l'application en mode développement :
-```bash
-npm run dev
-```
-
-## Déploiement
-
-L'application est déployée sur Heroku et accessible à l'adresse suivante :
-- [https://devops-userapi-2024-671a8bceceee.herokuapp.com/](https://devops-userapi-2024-671a8bceceee.herokuapp.com/)
-
-### Endpoints disponibles
-
-- `/` - Page d'accueil
-- `/health` - Endpoint de santé
-- `/users` - API utilisateurs (désactivée en production)
-
-### État du déploiement
-
-- Application web Node.js/Express
-- Tests unitaires et d'intégration
-- Déploiement continu sur Heroku
-- Health check endpoint
-
-## API Endpoints
-
-### Health Check
-- GET `/health` - Vérifie l'état de l'application
-
-### Utilisateurs
-- POST `/users` - Créer un nouvel utilisateur
-  - Body: `{ "id": "string", "name": "string", "email": "string" }`
-- GET `/users/:id` - Récupérer un utilisateur par ID
-- PUT `/users/:id` - Mettre à jour un utilisateur
-  - Body: `{ "name": "string", "email": "string" }`
-- DELETE `/users/:id` - Supprimer un utilisateur
-
-## Liens
-- [Repository GitHub](https://github.com/Vincent23032003/devops-project-2024.git)
-
-## Auteurs
-- Vincent BARÉ Cyber Gr 01
-- Louis DECOURTIS Cyber Gr 01
-- Quentin CARMINOT Cyber Gr 01
+_Projet réalisé dans le cadre du cours DevOps à l'ECE Paris_
