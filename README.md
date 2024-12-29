@@ -449,12 +449,8 @@ volumes:
 
 Notre déploiement Kubernetes est configuré pour la haute disponibilité et la scalabilité.
 
-####1. 🌟 Installer Minikube et démarrer le cluster
+#### 1. 🌟 Installer Minikube et démarrer le cluster
 > Action : Initialisation de l'environnement Kubernetes local
-
-#### 📥 Installer Minikube
-
-Suivez le guide officiel d'installation de [Minikube](https://minikube.sigs.k8s.io/docs/) en fonction de votre système d'exploitation.
 
 #### 🚦 Démarrer le cluster Minikube
 
