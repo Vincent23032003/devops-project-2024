@@ -387,9 +387,8 @@ Création d'une nouvelle image appelé node-api en utilisant les fonctionnalité
 ![Vérification création user curl](image/5-docker-compose/verificationUserCreation.png)
 
 
-### 6. Orchestration Kubernetes (KUB +3)
 
-# 🚀 Orchestration Kubernetes avec Minikube
+# 🚀 6. Orchestration Kubernetes avec Minikube (KUB +3)
 
 Cette partie vous montre comment configurer de l'orchestration Docker utilisant Kubernetes sur Minikube. La configuration comprend le déploiement de deux services (`userapi` et `redis`) avec un stockage persistant.
 
