@@ -161,6 +161,10 @@ Nous avons mis l'accent sur la qualité du code avec une suite de tests complèt
 
 [Voir nos tests en action](./image/1-app-web/npm_test.png)
 [Voir l'API en fonctionnement](./image/1-app-web/api_create.png)
+[Voir la lecture d'un utilisateur](./image/1-app-web/api_get.png)
+[Voir la mise à jour d'un utilisateur](./image/1-app-web/api_update.png)
+[Voir la suppression d'un utilisateur](./image/1-app-web/api_delete.png)
+[Voir le health check](./image/1-app-web/health_check.png)
 
 ### 2. CI/CD Pipeline
 
@@ -352,6 +356,9 @@ CMD ["npm", "start"]
 
 [Voir le build multi-stage](./image/4-docker-image/build.png)
 [Voir notre image sur Docker Hub](./image/4-docker-image/dockerHub.png)
+[Voir le push vers Docker Hub](./image/4-docker-image/push.png)
+[Voir le test local](./image/4-docker-image/runLocal.png)
+[Voir la validation du fonctionnement](./image/4-docker-image/runValide.png)
 
 ### 5. Docker Compose
 
@@ -410,6 +417,14 @@ volumes:
 
 [Voir les services en action](./image/5-docker-compose/serveur-running.png)
 [Voir les tests de l'API](./image/5-docker-compose/curlSnippet.png)
+[Voir le build des services](./image/5-docker-compose/build.png)
+[Voir le push vers Docker Hub](./image/5-docker-compose/push.png)
+[Voir l'image sur Docker Hub](./image/5-docker-compose/dockerHub.png)
+[Voir le démarrage des services](./image/5-docker-compose/docker-compose-up.png)
+[Voir les services en cours d'exécution](./image/5-docker-compose/serveur-running.png)
+[Voir le test avec curl](./image/5-docker-compose/curlSnippet.png)
+[Voir la création d'un utilisateur](./image/5-docker-compose/creationUserCurl.png)
+[Voir la vérification de la création](./image/5-docker-compose/verificationUserCreation.png)
 
 ### 6. Kubernetes
 
@@ -480,6 +495,14 @@ Notre déploiement Kubernetes est configuré pour la haute disponibilité et la 
 
 [Voir l'état du cluster](./image/6-K8/cluster-info.png)
 [Voir les déploiements](./image/6-K8/deployment-status.png)
+[Voir le démarrage de Minikube](./image/6-K8/minikube-start.png)
+[Voir le build de l'image](./image/6-K8/docker-build.png)
+[Voir le build de l'image Redis](./image/6-K8/docker-build-redis.png)
+[Voir le déploiement des manifestes](./image/6-K8/manifests-deployment.png)
+[Voir l'état des déploiements](./image/6-K8/deployment-status.png)
+[Voir le redémarrage des déploiements](./image/6-K8/deployment-restart.png)
+[Voir l'interface utilisateur](./image/6-K8/userapi-interface.png)
+[Voir le nettoyage des ressources](./image/6-K8/cleanup.png)
 
 ### 7. Service Mesh avec Istio
 
@@ -541,7 +564,7 @@ istioctl verify-install
          version: v2
    ```
 
-[Voir l'installation d'Istio](./image/7-istio/installation-verification.png)
+[Voir l'installation d'Istio](./image/7-istio/istio-install.png)
 [Voir la configuration du routage](./image/7-istio/virtualservice-creation.png)
 
 ## 📁 Structure du Projet
@@ -574,7 +597,7 @@ Notre projet suit une structure modulaire et organisée :
 
 - [Repository GitHub](https://github.com/Vincent23032003/devops-project-2024)
 - [Image Docker Hub](https://hub.docker.com/r/vincennnt/userapi)
-- [Application Heroku](https://devops-userapi-2024.herokuapp.com)
+- [Application Heroku](https://devops-userapi-2024-671a8bceceee.herokuapp.com/)
 
 ## 👥 Auteurs
 
