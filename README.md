@@ -688,15 +688,15 @@ En cas de pépins consulter l'un des liens suivants pour vous aider ':)' :
 
 ## 🛠️ Instructions de configuration
 
-### ** 🌟 Étape 1 : Installer Istio dans le Cluster Kubernetes**
+### **🌟 Étape 1 : Installer Istio dans le Cluster Kubernetes**
 
-#### ** 📥 Télécharger et installer Istio**
+#### **📥 Télécharger et installer Istio**
 
 1. Téléchargez la version d'Istio compatible avec votre système d'exploitation (à titre d'exemple : `istio-1.24.2-win-amd64.zip`).
 2. Extrayez le contenu de l'archive dans un répertoire.
 3. Ajoutez le chemin du binaire `istioctl` à votre variable d'environnement `PATH`.
 
-#### ** ✅ Vérifier l'installation d'Istio**
+#### **✅ Vérifier l'installation d'Istio**
 
 Exécutez la commande suivante pour confirmer qu'Istio est correctement installé :
 
@@ -706,7 +706,7 @@ istioctl version
 
 Vous devriez voir une sortie indiquant la version du client Istio.
 
-#### ** 🚦 Déployer Istio dans le cluster**
+#### **🚦 Déployer Istio dans le cluster**
 
 1. Utilisez Istio pour déployer les composants de base dans le namespace `istio-system` :
 
@@ -726,11 +726,11 @@ Vous devriez voir une sortie indiquant la version du client Istio.
 
 
 
-### **2. 📦 Déployer les Versions de l'Application**
+### **2.📦 Déployer les Versions de l'Application**
 
 Nous allons déployer deux versions de l'application (à partir de la même image Docker avec des tags différents).
 
-#### ** 📝 Créer les fichiers YAML des déploiements**
+#### **📝 Créer les fichiers YAML des déploiements**
 
 #### **`userapi-v1-deployment.yaml`**
 
@@ -806,7 +806,7 @@ spec:
       targetPort: 3000
 ```
 
-### ** ⚙️ Appliquer les fichiers YAML**
+### **⚙️ Appliquer les fichiers YAML**
 
 Déployez les ressources dans le cluster :
 
