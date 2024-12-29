@@ -107,9 +107,7 @@ Cette étape consiste à :
 
 ---
 
-#### Préparation
-
-##### Structure du projet
+#### Structure du projet
 Le projet contient les éléments suivants :
 - **Dockerfile** : Définit comment l'image Docker est construite.
 - **.dockerignore** : Spécifie les fichiers et dossiers à exclure de l'image Docker.
