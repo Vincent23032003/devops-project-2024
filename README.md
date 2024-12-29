@@ -704,13 +704,13 @@ Avant de commencer, assurez-vous d'avoir :
 
 ### **🛠️ Étape 1 : Installer Istio dans le Cluster Kubernetes**
 
-### **📥 1.1 - Télécharger et installer Istio**
+#### **📥 1.1 - Télécharger et installer Istio**
 
 1. Téléchargez la version d'Istio compatible avec votre système d'exploitation (à titre d'exemple : `istio-1.24.2-win-amd64.zip`).
 2. Extrayez le contenu de l'archive dans un répertoire.
 3. Ajoutez le chemin du binaire `istioctl` à votre variable d'environnement `PATH`.
 
-### **✨ 1.2 - Vérifier l'installation d'Istio**
+#### **✨ 1.2 - Vérifier l'installation d'Istio**
 
 Exécutez la commande suivante pour confirmer qu'Istio est correctement installé :
 
@@ -720,7 +720,7 @@ istioctl version
 
 Vous devriez voir une sortie indiquant la version du client Istio.
 
-### **🚀 1.3 - Déployer Istio dans le cluster**
+#### **🚀 1.3 - Déployer Istio dans le cluster**
 
 1. Utilisez Istio pour déployer les composants de base dans le namespace `istio-system` :
 
@@ -744,7 +744,7 @@ Vous devriez voir une sortie indiquant la version du client Istio.
 
 Nous allons déployer deux versions de l'application (à partir de la même image Docker avec des tags différents).
 
-### **📝 2.1 - Créer les fichiers YAML des déploiements**
+#### **📝 2.1 - Créer les fichiers YAML des déploiements**
 
 #### **`userapi-v1-deployment.yaml`**
 
@@ -843,7 +843,7 @@ kubectl get services
 
 ### **🌐 Étape 3 : Configurer le Service Mesh avec Istio**
 
-### **🔧 3.1 - Ajouter un Gateway pour l'Application**
+#### **🔧 3.1 - Ajouter un Gateway pour l'Application**
 
 Créez un Gateway pour exposer l'application au trafic externe.
 
@@ -874,7 +874,7 @@ kubectl apply -f userapi-gateway.yaml
 
 [📸 Voir capture d'écran](image/7-istio/gateway-creation.png)
 
-### **🛣️ 3.2 - Créer un VirtualService pour le Routage**
+#### **🛣️ 3.2 - Créer un VirtualService pour le Routage**
 
 Configurez un routage initial à 50%-50% entre `v1` et `v2`.
 
@@ -910,7 +910,7 @@ kubectl apply -f userapi-virtualservice.yaml
 
 [📸 Voir capture d'écran](image/7-istio/virtualservice-creation.png)
 
-### **🎯 3.3 - Définir des DestinationRules pour les Subsets**
+#### **🎯 3.3 - Définir des DestinationRules pour les Subsets**
 
 Créez des subsets pour `v1` et `v2`.
 
@@ -944,7 +944,7 @@ kubectl apply -f userapi-destinationrule.yaml
 
 ### **🧪 Étape 4 : Tester le Mesh et Modifier le Routage**
 
-### **🔍 4.1 - Accéder au Service**
+#### **🔍 4.1 - Accéder au Service**
 
 Exposez le service via le Gateway Istio :
 
@@ -956,7 +956,7 @@ Accédez au service sur [http://localhost:8080](http://localhost:8080).
 
 [📸 Voir capture d'écran](image/7-istio/access-service.png)
 
-### **⚖️ 4.2 - Modifier le Routage**
+#### **⚖️ 4.2 - Modifier le Routage**
 
 Pour changer la répartition du trafic (par exemple, 80% `v1` et 20% `v2`), mettez à jour le VirtualService :
 
@@ -983,7 +983,7 @@ kubectl apply -f userapi-virtualservice.yaml
 
 ---
 
-## **🧹 Étape 5 : Nettoyer les Ressources**
+### **🧹 Étape 5 : Nettoyer les Ressources**
 
 Une fois les tests terminés, supprimez les ressources Istio :
 
