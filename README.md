@@ -676,19 +676,335 @@ kubectl delete -f userapi-deployment.yaml
 
 [Voir le nettoyage des ressources](./image/6-K8/cleanup.png)
 
-## 🎉 Conclusion
+### 🎉 Conclusion
 
 Vous avez maintenant configuré avec succès l'orchestration Docker utilisant Kubernetes sur Minikube. Les services `userapi` et `redis` sont en cours d'exécution avec un stockage persistant, et vous pouvez tester les services localement en utilisant le transfert de port.
 
-## 📚 Ressources utiles
+### 📚 Ressources utiles
 
 - [Documentation officielle Kubernetes](https://kubernetes.io/docs/)
 - [Documentation Minikube](https://minikube.sigs.k8s.io/docs/)
 - [Guide des meilleures pratiques Kubernetes](https://kubernetes.io/docs/concepts/configuration/overview/)
 
 
-### 7. Service Mesh avec Istio (IST +2)
-*🚧 En cours de développement*
+# 7. 🚀 Make a service mesh using Istio
+
+📘 Cette partie explique en détail les étapes pour créer un service mesh à l'aide d'Istio sur un cluster Kubernetes. Nous déploierons deux versions d'une application, configurerons la gestion du trafic et effectuerons un équilibrage de charge entre les versions.
+
+---
+
+## **📋 Prérequis**
+
+Avant de commencer, assurez-vous d'avoir :
+
+- ✅ **Un cluster Kubernetes** en fonctionnement (par exemple, via Minikube).
+- ✅ **Istio installé** sur votre machine et déployé dans le cluster Kubernetes.
+- ✅ Une image Docker de votre application (une seule image, avec deux versions créées via des tags différents).
+- ✅ L'utilitaire **kubectl** configuré pour interagir avec le cluster Kubernetes.
+
+---
+
+### **🛠️ Étape 1 : Installer Istio dans le Cluster Kubernetes**
+
+### **📥 1.1 - Télécharger et installer Istio**
+
+1. Téléchargez la version d'Istio compatible avec votre système d'exploitation (à titre d'exemple : `istio-1.24.2-win-amd64.zip`).
+2. Extrayez le contenu de l'archive dans un répertoire.
+3. Ajoutez le chemin du binaire `istioctl` à votre variable d'environnement `PATH`.
+
+### **✨ 1.2 - Vérifier l'installation d'Istio**
+
+Exécutez la commande suivante pour confirmer qu'Istio est correctement installé :
+
+```bash
+istioctl version
+```
+
+Vous devriez voir une sortie indiquant la version du client Istio.
+
+### **🚀 1.3 - Déployer Istio dans le cluster**
+
+1. Utilisez Istio pour déployer les composants de base dans le namespace `istio-system` :
+
+   ```bash
+   istioctl install --set profile=demo -y
+   ```
+
+2. Confirmez que les pods d'Istio sont en cours d'exécution :
+
+   ```bash
+   kubectl get pods -n istio-system
+   ```
+
+   Vous devriez voir les composants principaux tels que `istiod`, `istio-ingressgateway`, et `istio-egressgateway`.
+
+[📸 Voir capture d'écran](image/7-istio/installation-verification.png)
+
+---
+
+### **📦 Étape 2 : Déployer les Versions de l'Application**
+
+Nous allons déployer deux versions de l'application (à partir de la même image Docker avec des tags différents).
+
+### **📝 2.1 - Créer les fichiers YAML des déploiements**
+
+#### **`userapi-v1-deployment.yaml`**
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userapi-v1
+  labels:
+    app: userapi
+    version: v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: userapi
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: userapi
+        version: v1
+    spec:
+      containers:
+      - name: userapi
+        image: quentinc123/userapi:v1
+        ports:
+        - containerPort: 3000
+```
+
+#### **`userapi-v2-deployment.yaml`**
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userapi-v2
+  labels:
+    app: userapi
+    version: v2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: userapi
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: userapi
+        version: v2
+    spec:
+      containers:
+      - name: userapi
+        image: quentinc123/userapi:v2
+        ports:
+        - containerPort: 3000
+```
+
+#### **`userapi-service.yaml`**
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: userapi
+spec:
+  selector:
+    app: userapi
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+```
+
+### **🚀 2.2 - Appliquer les fichiers YAML**
+
+Déployez les ressources dans le cluster :
+
+```bash
+kubectl apply -f userapi-v1-deployment.yaml
+kubectl apply -f userapi-v2-deployment.yaml
+kubectl apply -f userapi-service.yaml
+```
+
+Confirmez que les pods et le service sont créés :
+
+```bash
+kubectl get pods
+kubectl get services
+```
+
+[📸 Voir capture d'écran](image/7-istio/deployments-verification.png)
+
+---
+
+### **🌐 Étape 3 : Configurer le Service Mesh avec Istio**
+
+### **🔧 3.1 - Ajouter un Gateway pour l'Application**
+
+Créez un Gateway pour exposer l'application au trafic externe.
+
+#### **`userapi-gateway.yaml`**
+
+```yaml
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: userapi-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+```
+
+Appliquez ce fichier :
+
+```bash
+kubectl apply -f userapi-gateway.yaml
+```
+
+[📸 Voir capture d'écran](image/7-istio/gateway-creation.png)
+
+### **🛣️ 3.2 - Créer un VirtualService pour le Routage**
+
+Configurez un routage initial à 50%-50% entre `v1` et `v2`.
+
+#### **`userapi-virtualservice.yaml`**
+
+```yaml
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: userapi
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - userapi-gateway
+  http:
+  - route:
+    - destination:
+        host: userapi
+        subset: v1
+      weight: 50
+    - destination:
+        host: userapi
+        subset: v2
+      weight: 50
+```
+
+Appliquez ce fichier :
+
+```bash
+kubectl apply -f userapi-virtualservice.yaml
+```
+
+[📸 Voir capture d'écran](image/7-istio/virtualservice-creation.png)
+
+### **🎯 3.3 - Définir des DestinationRules pour les Subsets**
+
+Créez des subsets pour `v1` et `v2`.
+
+#### **`userapi-destinationrule.yaml`**
+
+```yaml
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: userapi
+spec:
+  host: userapi
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+```
+
+Appliquez ce fichier :
+
+```bash
+kubectl apply -f userapi-destinationrule.yaml
+```
+
+[📸 Voir capture d'écran](image/7-istio/destinationrule-creation.png)
+
+---
+
+### **🧪 Étape 4 : Tester le Mesh et Modifier le Routage**
+
+### **🔍 4.1 - Accéder au Service**
+
+Exposez le service via le Gateway Istio :
+
+```bash
+kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80
+```
+
+Accédez au service sur [http://localhost:8080](http://localhost:8080).
+
+[📸 Voir capture d'écran](image/7-istio/access-service.png)
+
+### **⚖️ 4.2 - Modifier le Routage**
+
+Pour changer la répartition du trafic (par exemple, 80% `v1` et 20% `v2`), mettez à jour le VirtualService :
+
+```yaml
+http:
+- route:
+  - destination:
+      host: userapi
+      subset: v1
+    weight: 80
+  - destination:
+      host: userapi
+      subset: v2
+    weight: 20
+```
+
+Appliquez le fichier :
+
+```bash
+kubectl apply -f userapi-virtualservice.yaml
+```
+
+[📸 Voir capture d'écran](image/7-istio/modify-routing.png)
+
+---
+
+### **🧹 Étape 5 : Nettoyer les Ressources**
+
+Une fois les tests terminés, supprimez les ressources Istio :
+
+```bash
+kubectl delete -f userapi-gateway.yaml
+kubectl delete -f userapi-virtualservice.yaml
+kubectl delete -f userapi-destinationrule.yaml
+kubectl delete -f userapi-service.yaml
+kubectl delete -f userapi-v1-deployment.yaml
+kubectl delete -f userapi-v2-deployment.yaml
+```
+
+[📸 Voir capture d'écran](image/7-istio/cleanup-resources.png)
+
+---
+
+✨ Cette documentation fournit les étapes complètes pour configurer un service mesh avec Istio et gérer le trafic entre différentes versions d'une application.
+
+
 
 ## Installation et Utilisation
 
