@@ -449,82 +449,290 @@ volumes:
 
 Notre déploiement Kubernetes est configuré pour la haute disponibilité et la scalabilité.
 
-#### Manifestes Kubernetes
+####1. 🌟 Installer Minikube et démarrer le cluster
+> Action : Initialisation de l'environnement Kubernetes local
 
-1. **Deployment API**
-   ```yaml
-   apiVersion: apps/v1
-   kind: Deployment
-   metadata:
-     name: userapi
-   spec:
-     replicas: 3
-     selector:
-       matchLabels:
-         app: userapi
-     template:
-       metadata:
-         labels:
-           app: userapi
-       spec:
-         containers:
-         - name: userapi
-           image: vincennnt/userapi:latest
-           ports:
-           - containerPort: 3000
-           livenessProbe:
-             httpGet:
-               path: /health
-               port: 3000
-           readinessProbe:
-             httpGet:
-               path: /health
-               port: 3000
-   ```
+#### 📥 Installer Minikube
 
-2. **Service**
-   ```yaml
-   apiVersion: v1
-   kind: Service
-   metadata:
-     name: userapi
-   spec:
-     type: LoadBalancer
-     ports:
-     - port: 80
-       targetPort: 3000
-     selector:
-       app: userapi
-   ```
+Suivez le guide officiel d'installation de [Minikube](https://minikube.sigs.k8s.io/docs/) en fonction de votre système d'exploitation.
 
-3. **Persistent Volume**
-   ```yaml
-   apiVersion: v1
-   kind: PersistentVolume
-   metadata:
-     name: redis-pv
-   spec:
-     capacity:
-       storage: 1Gi
-     accessModes:
-       - ReadWriteOnce
-     hostPath:
-       path: /data/redis
-   ```
+#### 🚦 Démarrer le cluster Minikube
 
-#### 📸 Captures d'écran
+```bash
+# Démarre un cluster Kubernetes local avec les paramètres par défaut
+# Cette commande initialise un environnement Kubernetes mononode sur votre machine
+minikube start
+```
 
-| Étape | Description | Capture |
-|-------|-------------|----------|
-| Minikube | Démarrage du cluster local | [📷](./image/6-K8/minikube-start.png) |
-| Cluster | Information sur le cluster | [📷](./image/6-K8/cluster-info.png) |
-| Build API | Construction de l'image API | [📷](./image/6-K8/docker-build.png) |
-| Build Redis | Construction de l'image Redis | [📷](./image/6-K8/docker-build-redis.png) |
-| Déploiement | Application des manifestes | [📷](./image/6-K8/manifests-deployment.png) |
-| État | État des déploiements | [📷](./image/6-K8/deployment-status.png) |
-| Redémarrage | Redémarrage des services | [📷](./image/6-K8/deployment-restart.png) |
-| Interface | Interface utilisateur | [📷](./image/6-K8/userapi-interface.png) |
-| Nettoyage | Suppression des ressources | [📷](./image/6-K8/cleanup.png) |
+[Voir le résultat](./image/6-K8/minikube-start.png)
+
+#### ✅ Vérifier le cluster
+
+```bash
+# Affiche les informations sur le cluster Kubernetes en cours d'exécution
+kubectl cluster-info
+```
+
+[Voir la sortie du cluster-info](./image/6-K8/cluster-info.png)
+
+---
+
+#### 2. 🐳 Dockeriser l'application
+> Action : Préparation des conteneurs pour le déploiement
+
+#### 🏗️ Construire les images Docker
+
+```bash
+# Construit l'image Docker pour l'API utilisateur
+docker build -t quentinc123/userapi:latest .
+
+# Construit l'image Docker pour Redis
+docker build -t redis:latest .
+```
+
+[Voir le processus de build Docker](./image/6-K8/docker-build.png)
+[Voir le processus de build Docker pour Redis](./image/6-K8/docker-build-redis.png)
+
+---
+
+#### 3. 📝 Créer les manifestes Kubernetes
+> Action : Configuration des ressources Kubernetes nécessaires
+
+Création des fichiers YAML Kubernetes pour définir les déploiements et services.
+
+#### `redis-deployment.yaml`
+
+Ce fichier définit le déploiement et le service pour le service `redis`.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:latest
+        ports:
+        - containerPort: 6379
+```
+
+#### `redis-service.yaml`
+
+Ce fichier définit le service pour le service `redis`.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  selector:
+    app: redis
+  ports:
+    - protocol: TCP
+      port: 6379
+  clusterIP: None
+```
+
+#### `userapi-deployment.yaml`
+
+Ce fichier définit le déploiement pour le service `userapi`.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userapi-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: userapi
+  template:
+    metadata:
+      labels:
+        app: userapi
+    spec:
+      containers:
+      - name: userapi-container
+        image: quentinc123/userapi:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: REDIS_HOST
+          value: redis-service
+```
+
+#### `userapi-service.yaml`
+
+Ce fichier définit le service pour le service `userapi`.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: userapi-service
+spec:
+  selector:
+    app: userapi
+  ports:
+    - protocol: TCP
+      port: 3000
+  clusterIP: None
+```
+
+#### Volume persistant et réclamation pour Redis
+
+Création les fichiers suivants pour le volume persistant et la réclamation.
+
+**`redis-pv.yaml`** :
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data/redis
+```
+
+**`redis-pvc.yaml`** :
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+```
+
+---
+
+#### 4. ⚙️ Appliquer les manifestes Kubernetes
+> Action : Déploiement des services dans le cluster
+
+```bash
+# Crée le volume persistant pour Redis
+# Permet de conserver les données même après un redémarrage
+kubectl apply -f redis-pv.yaml
+
+# Crée la réclamation de volume persistant
+# Lie le volume persistant à Redis
+kubectl apply -f redis-pvc.yaml
+
+# Déploie Redis avec la configuration spécifiée
+# Crée un pod Redis avec stockage persistant
+kubectl apply -f redis-deployment.yaml
+
+# Expose Redis comme un service dans le cluster
+# Permet aux autres pods de communiquer avec Redis
+kubectl apply -f redis-service.yaml
+
+# Déploie l'API utilisateur
+# Crée les pods pour l'application userapi
+kubectl apply -f userapi-deployment.yaml
+
+# Expose l'API utilisateur comme un service
+# Permet d'accéder à l'API depuis l'extérieur du cluster
+kubectl apply -f userapi-service.yaml
+```
+
+[Voir le déploiement des manifestes](./image/6-K8/manifests-deployment.png)
+
+---
+
+#### 5. 🔍 Vérifier les déploiements
+> Action : Validation de l'état des services déployés
+
+```bash
+# Liste tous les pods en cours d'exécution
+# Vérifie que les pods sont en état 'Running'
+kubectl get pods
+
+# Liste tous les services actifs
+# Montre les points d'accès des applications
+kubectl get services
+
+# Liste tous les déploiements
+# Affiche le nombre de répliques et leur état
+kubectl get deployments
+```
+
+[Voir l'état des déploiements](./image/6-K8/deployment-status.png)
+
+---
+
+#### 6. 🧪 Tester les services
+> Action : Test de l'accessibilité des services déployés
+
+```bash
+# Transfère le port 3000 du service vers localhost
+# Permet d'accéder à l'API depuis votre machine locale
+kubectl port-forward service/userapi-service 3000:3000
+```
+
+[Voir l'interface utilisateur en action](./image/6-K8/userapi-interface.png)
+
+---
+
+#### 7. 🔄 Redémarrer les déploiements
+> Action : Mise à jour des services en cours d'exécution
+
+```bash
+# Redémarre le déploiement de l'API utilisateur
+kubectl rollout restart deployment/userapi-deployment
+
+# Redémarre le déploiement Redis
+kubectl rollout restart deployment/redis-deployment
+```
+
+[Voir le redémarrage des déploiements](./image/6-K8/deployment-restart.png)
+
+---
+
+#### 8. 🧹 Nettoyer les ressources
+> Action : Suppression propre des ressources créées
+
+```bash
+# Supprime le volume persistant Redis
+# Libère l'espace de stockage alloué
+kubectl delete -f redis-pv.yaml
+
+# Supprime la réclamation de volume persistant
+# Nettoie la demande de stockage
+kubectl delete -f redis-pvc.yaml
+
+# Supprime le déploiement Redis
+# Arrête tous les pods Redis
+kubectl delete -f redis-deployment.yaml
+
+# Supprime le déploiement de l'API utilisateur
+# Arrête tous les pods de l'API
+kubectl delete -f userapi-deployment.yaml
+```
+
+[Voir le nettoyage des ressources](./image/6-K8/cleanup.png)
 
 ### 7. Service Mesh avec Istio
 
