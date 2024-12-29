@@ -63,7 +63,7 @@ jobs:
       - name: Deploy to Heroku
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          HEROKU_APP_NAME: devops-userapi-2024-671a8bceceee
+          HEROKU_APP_NAME: devops-userapi-2024
         run: |
           git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git
           git push heroku main:main -f
