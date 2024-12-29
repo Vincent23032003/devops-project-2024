@@ -99,7 +99,7 @@ vagrant destroy # Supprimer la VM
 
 ### 4. Construction et publication de l'image Docker de l'application
 
-## Objectif
+#### Objectif
 Cette étape consiste à :
 1. Construire une image Docker fonctionnelle pour l'application.
 2. S'assurer que seuls les fichiers nécessaires sont inclus dans l'image.
@@ -107,9 +107,9 @@ Cette étape consiste à :
 
 ---
 
-## Préparation
+#### Préparation
 
-### Structure du projet
+##### Structure du projet
 Le projet contient les éléments suivants :
 - **Dockerfile** : Définit comment l'image Docker est construite.
 - **.dockerignore** : Spécifie les fichiers et dossiers à exclure de l'image Docker.
@@ -985,7 +985,7 @@ kubectl apply -f userapi-virtualservice.yaml
 
 ---
 
-### **🧹 Étape 5 : Nettoyer les Ressources**
+## **🧹 Étape 5 : Nettoyer les Ressources**
 
 Une fois les tests terminés, supprimez les ressources Istio :
 
