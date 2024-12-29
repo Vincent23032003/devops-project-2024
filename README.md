@@ -730,6 +730,8 @@ kubectl delete -f userapi-deployment.yaml
 
 [Voir le nettoyage des ressources](./image/6-K8/cleanup.png)
 
+---
+
 ### 7. Service Mesh avec Istio
 
 Notre configuration Istio implémente des patterns avancés de gestion du trafic.
@@ -827,13 +829,15 @@ Notre projet suit une structure modulaire et organisée :
 - [Repository GitHub](https://github.com/Vincent23032003/devops-project-2024)
 - [Image Docker Hub](https://hub.docker.com/r/vincennnt/userapi)
 - [Application Heroku](https://devops-userapi-2024-671a8bceceee.herokuapp.com/)
+- [Documentation officielle Kubernetes](https://kubernetes.io/docs/)
+- [Documentation Minikube](https://minikube.sigs.k8s.io/docs/)
+- [Guide des meilleures pratiques Kubernetes](https://kubernetes.io/docs/concepts/configuration/overview/)
 
 ## 👥 Auteurs
 
 - **Vincent BARÉ** - Cyber Gr 01
-  - Configuration Kubernetes
-  - Intégration Istio
   - CI/CD Pipeline
+  - Docker
 
 - **Louis DECOURTIS** - Cyber Gr 01
   - Développement API
@@ -841,8 +845,7 @@ Notre projet suit une structure modulaire et organisée :
   - Documentation
 
 - **Quentin CARMINOT** - Cyber Gr 01
-  - Infrastructure as Code
-  - Docker
-  - Monitoring
+  - Configuration Kubernetes
+  - Intégration Istio
 
 _Projet réalisé dans le cadre du cours DevOps à l'ECE Paris_
