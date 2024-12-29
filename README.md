@@ -384,7 +384,7 @@ Création d'une nouvelle image appelé node-api en utilisant les fonctionnalité
 ### Création user avec curl snippet
 ![Vérification création user curl](image/5-docker-compose/verificationUserCreation.png)
 
-
+---
 
 # 🚀 6. Orchestration Kubernetes avec Minikube (KUB +3)
 
@@ -393,6 +393,8 @@ Création d'une nouvelle image appelé node-api en utilisant les fonctionnalité
 - ✅ **Minikube** et **kubectl** installés sur votre machine
 - ✅ Les images Docker pour `userapi` et `redis` doivent être disponibles dans votre registre Docker local ou un registre public
 - ✅ Connaissances de base des ressources Kubernetes (pods, déploiements, services)
+
+---
 
 ## 🛠️ Instructions de configuration
 
@@ -422,6 +424,8 @@ kubectl cluster-info
 
 [Voir la sortie du cluster-info](./image/6-K8/cluster-info.png)
 
+---
+
 ### 2. 🐳 Dockeriser l'application
 > Action : Préparation des conteneurs pour le déploiement
 
@@ -437,6 +441,8 @@ docker build -t redis:latest .
 
 [Voir le processus de build Docker](./image/6-K8/docker-build.png)
 [Voir le processus de build Docker pour Redis](./image/6-K8/docker-build-redis.png)
+
+---
 
 ### 3. 📝 Créer les manifestes Kubernetes
 > Action : Configuration des ressources Kubernetes nécessaires
@@ -570,6 +576,8 @@ spec:
       storage: 1Gi
 ```
 
+---
+
 ### 4. ⚙️ Appliquer les manifestes Kubernetes
 > Action : Déploiement des services dans le cluster
 
@@ -601,6 +609,8 @@ kubectl apply -f userapi-service.yaml
 
 [Voir le déploiement des manifestes](./image/6-K8/manifests-deployment.png)
 
+---
+
 ### 5. 🔍 Vérifier les déploiements
 > Action : Validation de l'état des services déployés
 
@@ -620,6 +630,8 @@ kubectl get deployments
 
 [Voir l'état des déploiements](./image/6-K8/deployment-status.png)
 
+---
+
 ### 6. 🧪 Tester les services
 > Action : Test de l'accessibilité des services déployés
 
@@ -630,6 +642,8 @@ kubectl port-forward service/userapi-service 3000:3000
 ```
 
 [Voir l'interface utilisateur en action](./image/6-K8/userapi-interface.png)
+
+---
 
 ### 7. 🔄 Redémarrer les déploiements
 > Action : Mise à jour des services en cours d'exécution
@@ -643,6 +657,8 @@ kubectl rollout restart deployment/redis-deployment
 ```
 
 [Voir le redémarrage des déploiements](./image/6-K8/deployment-restart.png)
+
+---
 
 ### 8. 🧹 Nettoyer les ressources
 > Action : Suppression propre des ressources créées
@@ -667,6 +683,8 @@ kubectl delete -f userapi-deployment.yaml
 
 [Voir le nettoyage des ressources](./image/6-K8/cleanup.png)
 
+---
+
 ### 📚 Ressources utiles
 
 En cas de pépins consulter l'un des liens suivants pour vous aider ':)' :
@@ -674,6 +692,8 @@ En cas de pépins consulter l'un des liens suivants pour vous aider ':)' :
 - [Documentation officielle Kubernetes](https://kubernetes.io/docs/)
 - [Documentation Minikube](https://minikube.sigs.k8s.io/docs/)
 - [Guide des meilleures pratiques Kubernetes](https://kubernetes.io/docs/concepts/configuration/overview/)
+
+---
 
 
 # 7. 🚀 Make a service mesh using Istio
@@ -685,10 +705,12 @@ En cas de pépins consulter l'un des liens suivants pour vous aider ':)' :
 - ✅ Une image Docker de votre application (une seule image, avec deux versions créées via des tags différents).
 - ✅ L'utilitaire **kubectl** configuré pour interagir avec le cluster Kubernetes.
 
+---
+
 
 ## 🛠️ Instructions de configuration
 
-### **🌟 Étape 1 : Installer Istio dans le Cluster Kubernetes**
+### **1. 🌟 Installer Istio dans le Cluster Kubernetes**
 
 #### **📥 Télécharger et installer Istio**
 
@@ -724,7 +746,7 @@ Vous devriez voir une sortie indiquant la version du client Istio.
 
 [📸 Voir capture d'écran](image/7-istio/installation-verification.png)
 
-
+---
 
 ### **2.📦 Déployer les Versions de l'Application**
 
@@ -825,7 +847,7 @@ kubectl get services
 
 [📸 Voir capture d'écran](image/7-istio/deployments-verification.png)
 
-
+---
 
 ### **3. 🌐 Configurer le Service Mesh avec Istio**
 
@@ -926,6 +948,7 @@ kubectl apply -f userapi-destinationrule.yaml
 
 [📸 Voir capture d'écran](image/7-istio/destinationrule-creation.png)
 
+---
 
 ### **🧪 Étape 4 : Tester le Mesh et Modifier le Routage**
 
@@ -966,6 +989,7 @@ kubectl apply -f userapi-virtualservice.yaml
 
 [📸 Voir capture d'écran](image/7-istio/modify-routing.png)
 
+---
 
 ### **🧹 Étape 5 : Nettoyer les Ressources**
 
@@ -982,8 +1006,7 @@ kubectl delete -f userapi-v2-deployment.yaml
 
 [📸 Voir capture d'écran](image/7-istio/cleanup-resources.png)
 
-
-
+---
 
 ## Installation et Utilisation
 
