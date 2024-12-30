@@ -732,71 +732,125 @@ kubectl delete -f userapi-deployment.yaml
 
 ---
 
-### 7. Service Mesh avec Istio
+### 🌐 7. Service Mesh avec Istio
 
-Notre configuration Istio implémente des patterns avancés de gestion du trafic.
+#### 🚀 Installation
 
-#### Installation et Configuration
-
+#### 1️⃣ Installation d'Istio
 ```bash
-# Installation d'Istio
+# Télécharger et installer Istio
 istioctl install --set profile=demo -y
-kubectl label namespace default istio-injection=enabled
 
-# Vérification
+# Activer l'injection automatique de sidecar Istio
+kubectl label namespace default istio-injection=enabled
+```
+
+### 2️⃣ Vérification
+```bash
 istioctl verify-install
 ```
 
-#### Configuration du Routage
+[📸 Voir la capture d'écran de la vérification de l'installation](./image/7-istio/istio-install.png)
 
-1. **VirtualService**
-   ```yaml
-   apiVersion: networking.istio.io/v1alpha3
-   kind: VirtualService
-   metadata:
-     name: userapi
-   spec:
-     hosts:
-     - "*"
-     gateways:
-     - userapi-gateway
-     http:
-     - route:
-       - destination:
-           host: userapi
-           subset: v1
-         weight: 90
-       - destination:
-           host: userapi
-           subset: v2
-         weight: 10
-   ```
+#### ⚙️ Configuration du Routage
 
-2. **DestinationRule**
-   ```yaml
-   apiVersion: networking.istio.io/v1alpha3
-   kind: DestinationRule
-   metadata:
-     name: userapi
-   spec:
-     host: userapi
-     trafficPolicy:
-       loadBalancer:
-         simple: ROUND_ROBIN
-     subsets:
-     - name: v1
-       labels:
-         version: v1
-     - name: v2
-       labels:
-         version: v2
-   ```
+#### 🔄 VirtualService
+Fichier: `userapi-virtualservice.yaml`
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: userapi
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - userapi-gateway
+  http:
+  - route:
+    - destination:
+        host: userapi
+        subset: v1
+      weight: 90
+    - destination:
+        host: userapi
+        subset: v2
+      weight: 10
+```
 
-#### 📸 Captures d'écran
+#### 🎯 DestinationRule
+Fichier: `userapi-destinationrule.yaml`
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: userapi
+spec:
+  host: userapi
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+```
 
-| Étape | Description | Capture |
-|-------|-------------|----------|
-| Installation | Installation d'Istio | [📷](./image/7-istio/istio-install.png) |
+#### 🚪 Gateway
+Fichier: `userapi-gateway.yaml`
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: userapi-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+```
+
+[🔧 Voir la capture d'écran de la configuration du Gateway](./image/7-istio/)
+
+#### 🔍 Vérification
+
+#### 1️⃣ Vérifier les Services Istio
+```bash
+kubectl get svc -n istio-system
+```
+
+[📸 Voir la capture d'écran des services Istio](./image/7-istio/)
+
+#### 2️⃣ Vérifier la Configuration
+```bash
+kubectl get virtualservices userapi -o yaml
+kubectl get destinationrules userapi -o yaml
+```
+
+[📸 Voir la capture d'écran des VirtualServices et DestinationRules](./image/7-istio/)
+
+#### 🧪 Test de l'Application
+
+#### 1️⃣ Obtenir l'IP du Gateway
+```bash
+kubectl get svc -n istio-system
+```
+
+#### 2️⃣ Tester les Routes
+```bash
+curl http://<external-ip>/v1
+curl http://<external-ip>/v2
+```
+
+[🖼️ Voir la capture d'écran du test de l'application](./image/7-istio/)
 
 ## 📁 Structure du Projet
 
