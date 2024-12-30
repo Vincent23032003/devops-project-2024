@@ -1,0 +1,170 @@
+openapi: 3.0.0
+info:
+  title: User API
+  description: API pour la gestion des utilisateurs avec Redis
+  version: 1.0.0
+  contact:
+    name: Louis DECOURTIS
+    email: louis.decourtis@edu.ece.fr
+
+servers:
+  - url: http://localhost:3000
+    description: Serveur de développement local
+  - url: https://devops-userapi-2024-671a8bceceee.herokuapp.com
+    description: Serveur de production Heroku
+
+tags:
+  - name: Users
+    description: Opérations sur les utilisateurs
+  - name: Health
+    description: Vérification de l'état du service
+
+paths:
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Créer un nouvel utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '201':
+          description: Utilisateur créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Données invalides
+        '500':
+          description: Erreur serveur
+
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Récupérer un utilisateur par son ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Utilisateur trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Utilisateur non trouvé
+        '500':
+          description: Erreur serveur
+
+    put:
+      tags:
+        - Users
+      summary: Mettre à jour un utilisateur
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '200':
+          description: Utilisateur mis à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Utilisateur non trouvé
+        '500':
+          description: Erreur serveur
+
+    delete:
+      tags:
+        - Users
+      summary: Supprimer un utilisateur
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Utilisateur supprimé avec succès
+        '404':
+          description: Utilisateur non trouvé
+        '500':
+          description: Erreur serveur
+
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Vérifier l'état de l'API
+      responses:
+        '200':
+          description: Service en bon état
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "UP"
+                  redis:
+                    type: string
+                    example: "Connected"
+        '500':
+          description: Service indisponible
+
+components:
+  schemas:
+    UserInput:
+      type: object
+      required:
+        - username
+        - email
+      properties:
+        username:
+          type: string
+          example: "john_doe"
+        email:
+          type: string
+          format: email
+          example: "john@example.com"
+        firstname:
+          type: string
+          example: "John"
+        lastname:
+          type: string
+          example: "Doe"
+
+    User:
+      allOf:
+        - $ref: '#/components/schemas/UserInput'
+        - type: object
+          properties:
+            id:
+              type: string
+              example: "user:123"
+            created_at:
+              type: string
+              format: date-time
+              example: "2024-12-30T12:00:00Z"

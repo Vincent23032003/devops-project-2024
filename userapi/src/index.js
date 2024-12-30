@@ -1,11 +1,18 @@
 const express = require('express');
 const { createClient } = require('redis');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware pour analyser les requêtes JSON
 app.use(express.json());
+
+// Chargement et configuration de Swagger
+const swaggerDocument = YAML.load(path.join(__dirname, '../swagger.yaml'));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Création et configuration du client Redis
 let redisClient = null;

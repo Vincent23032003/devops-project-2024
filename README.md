@@ -92,7 +92,64 @@ Nous avons conçu le processus d'installation pour être aussi simple et automat
 
 Notre API REST est construite avec Node.js et offre une gestion complète des utilisateurs. Elle utilise Redis comme base de données pour assurer des performances optimales et une mise en cache efficace.
 
-#### 1. 🛠️ Fonctionnalités Principales
+#### 1. 📚 Documentation API avec Swagger
+
+Notre API est entièrement documentée avec Swagger/OpenAPI, offrant une interface interactive pour explorer et tester les endpoints. La documentation est accessible via :
+
+- **Développement** : [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+- **Production** : [https://devops-userapi-2024-671a8bceceee.herokuapp.com/api-docs](https://devops-userapi-2024-671a8bceceee.herokuapp.com/api-docs)
+
+##### Configuration Swagger
+
+La documentation est générée à partir d'un fichier YAML qui définit :
+- Informations sur l'API (version, description, contact)
+- Serveurs disponibles (développement et production)
+- Schémas de données (modèles d'entrée/sortie)
+- Endpoints et leurs spécifications
+
+```yaml
+openapi: 3.0.0
+info:
+  title: User API
+  description: API pour la gestion des utilisateurs avec Redis
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+  - url: https://devops-userapi-2024-671a8bceceee.herokuapp.com
+```
+
+##### Modèles de Données
+
+Les schémas définissent la structure exacte des données :
+
+```yaml
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+```
+
+##### Endpoints Documentés
+
+Chaque endpoint est documenté avec :
+- Description détaillée
+- Paramètres requis
+- Format des requêtes
+- Réponses possibles
+- Exemples d'utilisation
+
+#### 2. 🛠️ Fonctionnalités Principales
 
 #### Endpoints API
 
@@ -153,31 +210,103 @@ npm test
 
 ### 2. CI/CD Pipeline
 
-Notre pipeline d'intégration et de déploiement continu assure la qualité et la livraison automatisée du code. Il est construit avec GitHub Actions et déploie automatiquement sur Heroku.
+Notre pipeline d'intégration et de déploiement continu est implémenté avec GitHub Actions, offrant une automatisation complète du processus de test et de déploiement.
 
-#### 1. 🔄 Intégration Continue
+#### 1. 🔄 Configuration du Workflow
 
-Le processus d'intégration continue vérifie automatiquement chaque modification de code :
-- Exécution de tous les tests
-- Vérification du style de code avec ESLint
-- Analyse de la qualité du code
-- Construction des images Docker
+Le pipeline est déclenché automatiquement sur deux événements :
+- Push sur la branche `main`
+- Pull Request vers la branche `main`
 
+```yaml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+```
+
+#### 2. 🏗️ Job de Build et Test
+
+Le premier job configure l'environnement et exécute les tests :
+
+##### Services Requis
+```yaml
+services:
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    options: >-
+      --health-cmd "redis-cli ping"
+      --health-interval 10s
+      --health-timeout 5s
+      --health-retries 5
+```
+
+##### Étapes d'Exécution
+
+1. **Checkout du Code**
+   ```yaml
+   - name: Checkout Code
+     uses: actions/checkout@v3
+   ```
+
+2. **Configuration de Node.js**
+   ```yaml
+   - name: Set up Node.js
+     uses: actions/setup-node@v3
+     with:
+       node-version: '18'
+       cache: 'npm'
+   ```
+
+3. **Installation des Dépendances**
+   ```yaml
+   - name: Install Dependencies
+     run: npm install
+   ```
+
+4. **Exécution des Tests**
+   ```yaml
+   - name: Run Tests
+     run: npm test
+   ```
+
+> Exécution des tests et vérifications
 ```bash
-# Exécution des tests et vérifications
 git push origin main
 ```
 ![Pipeline d'intégration continue](./image/2-ci-cd/github_actions.png)
 
-#### 2. 📦 Déploiement Continu
+#### 3. 🚀 Job de Déploiement
 
-Une fois les tests passés avec succès, le déploiement se fait automatiquement :
-- Déploiement sur Heroku
-- Vérifications post-déploiement
-- Notification de l'équipe en cas de succès ou d'échec
+Le déploiement sur Heroku est automatisé et sécurisé :
 
+##### Conditions de Déploiement
+- Succès du job de build et test
+- Push sur la branche `main`
+
+```yaml
+deploy:
+  needs: build-and-test
+  if: github.ref == 'refs/heads/main'
+```
+
+##### Configuration Heroku
+```yaml
+- name: Deploy to Heroku
+  env:
+    HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+    HEROKU_APP_NAME: devops-userapi-2024
+```
+
+> Déploiement automatique sur Heroku
 ```bash
-# Déploiement automatique sur Heroku
 git push heroku main
 ```
 ![Déploiement réussi sur Heroku](./image/2-ci-cd/heroku_deployment.png)
@@ -188,7 +317,36 @@ Notre infrastructure est entièrement gérée par code, utilisant Vagrant pour l
 
 #### 1. 🎯 Configuration de la Machine Virtuelle
 
-Vagrant nous permet de créer et gérer facilement des environnements de développement virtualisés. Notre configuration utilise VirtualBox comme provider et définit une VM Ubuntu optimisée pour notre application.
+##### Configuration Vagrant Détaillée
+
+Notre `Vagrantfile` est optimisé pour le développement :
+
+```ruby
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/focal64"  # Ubuntu 20.04 LTS
+  config.vm.hostname = "userapi-vm"
+  
+  # Configuration réseau avancée
+  config.vm.network "forwarded_port", guest: 3000, host: 3000  # API Node.js
+  config.vm.network "forwarded_port", guest: 6379, host: 6379  # Redis
+
+  # Montage optimisé des dossiers
+  config.vm.synced_folder "../", "/vagrant"
+  config.vm.synced_folder ".", "/vagrant/iac"
+
+  # Ressources VM optimisées
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "1024"  # RAM dédiée
+    vb.cpus = 2         # Cores CPU
+  end
+end
+```
+
+##### Points Clés de la Configuration
+- **Image de Base**: Ubuntu 20.04 LTS pour la stabilité
+- **Réseau**: Port forwarding configuré pour l'API (3000) et Redis (6379)
+- **Ressources**: 1GB RAM et 2 CPU cores pour des performances optimales
+- **Synchronisation**: Montage bidirectionnel des dossiers pour le développement
 
 ```bash
 # Démarrage de la machine virtuelle
@@ -198,11 +356,52 @@ vagrant up
 
 #### 2. 🔧 Provisionnement avec Ansible
 
-Ansible automatise la configuration de notre environnement en installant et configurant tous les composants nécessaires :
-- Installation de Node.js et npm
-- Configuration de Redis
-- Mise en place des dépendances système
-- Configuration des variables d'environnement
+Notre playbook Ansible (`main.yml`) automatise entièrement la configuration :
+
+##### Installation du Système
+```yaml
+- name: Installation des paquets essentiels
+  apt:
+    name: 
+      - curl
+      - git
+      build-essential
+    state: present
+```
+
+##### Configuration Node.js
+```yaml
+- name: Installation du dépôt Node.js
+  shell: |
+    curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+  args:
+    warn: false
+
+- name: Installation de Node.js
+  apt:
+    name: nodejs
+    state: present
+```
+
+##### Configuration Redis
+```yaml
+- name: Configuration de Redis
+  lineinfile:
+    path: /etc/redis/redis.conf
+    regexp: '^bind 127\.0\.0\.1'
+    line: 'bind 0.0.0.0'
+    backup: yes
+```
+
+##### Déploiement de l'Application
+```yaml
+- name: Copie des fichiers de l'application
+  synchronize:
+    src: /vagrant/userapi/
+    dest: /opt/userapi/
+    rsync_opts:
+      - "--exclude=node_modules"
+```
 
 ```bash
 # Exécution du playbook Ansible
@@ -210,31 +409,76 @@ ansible-playbook playbook.yml
 ```
 ![Résultat du provisioning](./image/3-iac/ansible_provisioning.png)
 
-#### 3. 🌐 Validation de l'Application
+#### 3. 🌐 Validation de l'Infrastructure
 
-Une fois l'infrastructure déployée, nous vérifions que l'application est correctement installée et accessible. Le port forwarding configuré dans Vagrant permet d'accéder à l'application depuis la machine hôte.
+##### Tests Automatisés
+```yaml
+- name: Vérification de la santé
+  uri:
+    url: http://localhost:3000/health
+    return_content: yes
+  register: health_check
+  until: health_check.status == 200
+  retries: 6
+  delay: 10
+```
+
+##### Points de Vérification
+- **Connectivité Réseau**: Test des ports forwardés
+- **Services**: Vérification de Node.js et Redis
+- **Application**: Test de l'API via endpoint /health
+- **Performance**: Monitoring des ressources VM
+
+##### Monitoring Continu
+- Logs centralisés dans `/var/log/userapi/`
+- Métriques système via `node-exporter`
+- Alerting configuré pour les événements critiques
 
 ```bash
 # Vérification de l'accès à l'application
-curl http://localhost:3000
+curl http://localhost:3000/health
 ```
 ![Accès à l'application via port forwarding](./image/3-iac/app_acces.png)
 
 ### 4. Docker
 
-Notre application est conteneurisée avec Docker pour garantir la portabilité et la cohérence entre les environnements. Nous utilisons une approche multi-stage build pour optimiser la taille de l'image et renforcer la sécurité.
+Notre application est conteneurisée avec Docker pour garantir la portabilité et la cohérence entre les environnements. Nous utilisons une image Node.js officielle comme base pour assurer stabilité et sécurité.
+
+Notre Dockerfile est configuré comme suit :
+```dockerfile
+# Utilisation d'une image de base officielle Node.js
+FROM node:16
+
+# Définition du répertoire de travail dans le conteneur
+WORKDIR /app
+
+# Copier les fichiers nécessaires pour installer les dépendances
+COPY package*.json ./
+
+# Installation des dépendances
+RUN npm install
+
+# Copier tout le code source de l'application
+COPY . .
+
+# Exposer le port 3000
+EXPOSE 3000
+
+# Commande pour démarrer l'application
+CMD ["npm", "start"]
+```
 
 #### 1. 🏗️ Construction de l'Image
 
 Notre Dockerfile est optimisé pour la production avec des bonnes pratiques :
-- Utilisation d'une image de base légère (node:16-alpine)
+- Utilisation d'une image de base officielle (node:16)
 - Copie sélective des fichiers nécessaires
 - Installation des dépendances en mode production
 - Configuration des variables d'environnement
 
 ```bash
 # Construction de l'image Docker
-docker build -t userapi .
+docker build -t vincent23032003/userapi:latest .
 ```
 ![Construction de l'image Docker](./image/4-docker-image/build.png)
 
@@ -244,7 +488,7 @@ La publication de notre image sur Docker Hub permet de la partager facilement av
 
 ```bash
 # Publication de l'image
-docker push userapi
+docker push vincent23032003/userapi:latest
 ```
 ![Publication de l'image](./image/4-docker-image/push.png)
 
@@ -263,7 +507,7 @@ Avant le déploiement en production, nous effectuons des tests approfondis en lo
 
 ```bash
 # Test local de l'image
-docker run -p 3000:3000 userapi
+docker run -p 3000:3000 vincent23032003/userapi
 ```
 ![Test local de l'image](./image/4-docker-image/runLocal.png)
 
@@ -280,6 +524,27 @@ curl http://localhost:3000/health
 ### 5. Docker Compose
 
 Docker Compose orchestre notre environnement multi-conteneurs, gérant à la fois notre API Node.js et notre base de données Redis. Cette configuration assure une isolation parfaite des services tout en facilitant leur communication.
+
+Notre configuration Docker Compose est définie comme suit :
+```yaml
+services:
+  app:
+    build:
+      context: ./userapi   # Spécifie le dossier contenant le Dockerfile
+      dockerfile: Dockerfile # Indique explicitement le nom du Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+```
 
 #### 1. 🔨 Construction des Images
 
@@ -319,7 +584,7 @@ Le démarrage des services est orchestré pour assurer un ordre correct et une i
 
 ```bash
 # Lancement des services
-docker-compose up -d
+docker-compose up --build
 ```
 ![Lancement des services](./image/5-docker-compose/docker-compose-up.png)
 
@@ -342,6 +607,33 @@ Une série de tests vérifie le bon fonctionnement de l'ensemble du système :
 ### 6. Kubernetes
 
 Notre déploiement Kubernetes est conçu pour offrir une haute disponibilité et une scalabilité automatique de notre application. Nous utilisons Minikube pour le développement local, ce qui nous permet de tester notre configuration Kubernetes dans un environnement isolé.
+
+Notre configuration Kubernetes utilise plusieurs composants :
+```yaml
+# userapi-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userapi-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: userapi
+  template:
+    metadata:
+      labels:
+        app: userapi
+    spec:
+      containers:
+      - name: userapi-container
+        image: quentinc123/userapi:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: REDIS_HOST
+          value: redis-service
+```
 
 #### 1. 🚀 Démarrage du Cluster
 
@@ -384,17 +676,14 @@ docker build -t redis:latest .
 #### 3. 📦 Déploiement des Services
 
 Le déploiement utilise des manifestes Kubernetes soigneusement configurés :
-- Déploiements avec réplication
+- Déploiements avec réplication (2 replicas pour UserAPI, 1 pour Redis)
 - Services pour la découverte
 - ConfigMaps et Secrets pour la configuration
 - Persistent Volumes pour les données Redis
 
 ```bash
 # Application des manifestes Kubernetes
-kubectl apply -f redis-deployment.yaml
-kubectl apply -f redis-service.yaml
-kubectl apply -f userapi-deployment.yaml
-kubectl apply -f userapi-service.yaml
+kubectl apply -f k8s/
 ```
 ![Déploiement des manifestes](./image/6-K8/manifests-deployment.png)
 
@@ -407,8 +696,12 @@ Nous vérifions minutieusement l'état de nos déploiements :
 - Logs des conteneurs
 
 ```bash
-# Vérification de l'état des déploiements
+# Vérification des pods
+kubectl get pods
+# Vérification des déploiements
 kubectl get deployments
+# Vérification des services
+kubectl get services
 ```
 ![État des déploiements](./image/6-K8/deployment-status.png)
 
@@ -451,6 +744,8 @@ Le nettoyage des ressources est systématique et complet :
 
 ```bash
 # Suppression des ressources
+kubectl delete -f redis-pv.yaml
+kubectl delete -f redis-pvc.yaml
 kubectl delete -f redis-deployment.yaml
 kubectl delete -f userapi-deployment.yaml
 ```
@@ -460,9 +755,39 @@ kubectl delete -f userapi-deployment.yaml
 
 Istio améliore notre architecture Kubernetes en ajoutant des fonctionnalités avancées de gestion du trafic, de sécurité et d'observabilité. Cette couche de service mesh nous permet de contrôler finement les communications entre nos services.
 
+Notre configuration Istio comprend :
+```yaml
+# userapi-virtualservice.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: userapi-virtualservice
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - userapi-gateway
+  http:
+  - route:
+    - destination:
+        host: userapi-service
+        subset: v1
+      weight: 90
+    - destination:
+        host: userapi-service
+        subset: v2
+      weight: 10
+```
+
 #### 1. 🛠️ Installation d'Istio
 
-L'installation d'Istio est la première étape pour mettre en place notre service mesh. Nous utilisons le profil 'demo' qui inclut tous les composants nécessaires pour un environnement de développement complet.
+Installation d'Istio avec le profil demo qui inclut tous les composants nécessaires :
+
+```bash
+# Installation d'Istio
+istioctl install --set profile=demo -y
+```
+![Installation d'Istio](./image/7-istio/istio-install.png)
 
 ```bash
 # Vérification de la version d'Istio
@@ -470,85 +795,65 @@ istioctl version
 ```
 ![Version d'Istio](./image/7-istio/istio-version.png)
 
-```bash
-# Installation d'Istio avec le profil demo
-istioctl install --set profile=demo -y
-```
-![Installation d'Istio](./image/7-istio/istio-install.png)
+#### 2. ⚙️ Configuration du Mesh
 
-#### 2. ⚙️ Configuration
-
-La configuration d'Istio implique l'activation de l'injection automatique des sidecars. Chaque pod de notre application recevra automatiquement un proxy Envoy qui gérera tout le trafic entrant et sortant.
+Vérification de l'état du système Istio :
 
 ```bash
-# Configuration de l'injection automatique des sidecars
-kubectl label namespace default istio-injection=enabled
+# Vérification des pods Istio
+kubectl get pods -n istio-system
 ```
-![Configuration de l'injection](./image/7-istio/istio-injection.png)
-
-#### 3. 🚀 Déploiement
-
-Le déploiement avec Istio ajoute automatiquement les sidecars à nos pods, permettant :
-- Routage intelligent du trafic
-- Load balancing avancé
-- Gestion des timeouts et des retries
-- Métriques détaillées
+![État des pods Istio](./image/7-istio/istio-running.png)
 
 ```bash
-# Déploiement de l'application
-kubectl apply -f deployment.yaml
+# Vérification de l'injection automatique
+kubectl get namespace -L istio-injection
 ```
-![Déploiement avec Istio](./image/7-istio/deployement.png)
+![Vérification de l'injection](./image/7-istio/istio-injection.png)
+
+#### 3. 🚀 Déploiement des Services
+
+Déploiement de nos services avec Istio :
+
+```bash
+# Construction et push de l'image v2
+docker push quentinc123/userapi:v2
+```
+![Construction de la v2](./image/7-istio/build-v2.png)
+
+```bash
+# Vérification des déploiements
+kubectl get deployments
+```
+![État des déploiements](./image/7-istio/deployment-status.png)
+
+#### 4. 🔀 Configuration du Routage
+
+Configuration du routage avec Istio :
+
+```bash
+# Vérification des gateways
+kubectl get gateways
+kubectl get virtualservices
+kubectl get destinationrules
+```
+![Vérification des règles](./image/7-istio/istio-check.png)
+
+```bash
+# Application du VirtualService
+kubectl apply -f virtualservice.yaml
+```
+![Configuration du VirtualService](./image/7-istio/virtualservice.png)
+
+#### 5. 🔍 Vérification des Services
+
+Vérification de l'état des services Istio :
 
 ```bash
 # Vérification des services Istio
 kubectl get svc -n istio-system
 ```
-![Services en cours d'exécution](./image/7-istio/istio-running.png)
-
-#### 4. 🆕 Version 2 de l'Application
-
-Pour démontrer les capacités de routage avancé d'Istio, nous déployons une deuxième version de notre application. Cela nous permet de mettre en place :
-- Blue/Green deployments
-- Canary releases
-- A/B testing
-- Traffic splitting
-
-```bash
-# Construction de la version 2
-docker build -t userapi:v2 .
-```
-![Construction de la v2](./image/7-istio/build-v2.png)
-
-#### 5. 🔀 Configuration du Routage
-
-La configuration du VirtualService permet un contrôle granulaire du trafic entre les différentes versions de notre application :
-- Règles de routage basées sur les headers
-- Pondération du trafic
-- Gestion des versions
-- Politiques de fallback
-
-```bash
-# Application du VirtualService
-kubectl apply -f virtual-service.yaml
-```
-![Configuration du VirtualService](./image/7-istio/virtualservice.png)
-
-#### 6. 🔍 Vérifications
-
-Une série de vérifications confirme le bon fonctionnement de notre configuration Istio :
-
-```bash
-# Vérification des règles de routage
-kubectl get virtualservice,destinationrule
-```
-![Vérification des règles](./image/7-istio/istio-check.png)
-
-```bash
-# État des services
-kubectl get svc -n istio-system
-```
-![État des services](./image/7-istio/istio-getsvc.png)
+![Services Istio](./image/7-istio/istio-getsvc.png)
 
 ```bash
 # Vérification des pods et services
@@ -556,18 +861,34 @@ kubectl get pods,svc
 ```
 ![Pods et services](./image/7-istio/pods-service.png)
 
-```bash
-# Test des conteneurs
-kubectl exec -it [pod-name] -- /bin/sh
-```
-![Test des conteneurs](./image/7-istio/test-conteneur-istio.png)
+Notre configuration comprend :
+- Un gateway Istio pour l'accès externe
+- Des règles de routage pour la version v1 et v2
+- Une configuration de load balancing
+- Des règles de destination pour le trafic
 
-Cette configuration Istio nous permet de :
-- Gérer efficacement le trafic entre les services
-- Implémenter des stratégies de déploiement avancées
-- Collecter des métriques détaillées
-- Sécuriser les communications inter-services
-- Faciliter le debugging et le monitoring
+```yaml
+# Configuration du VirtualService
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: userapi
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - userapi-gateway
+  http:
+  - route:
+    - destination:
+        host: userapi
+        subset: v1
+      weight: 90
+    - destination:
+        host: userapi
+        subset: v2
+      weight: 10
+```
 
 ## 🔗 Liens Utiles
 
