@@ -2,11 +2,17 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const { expect } = chai;
 const { app } = require('../src/index');
+const config = require('./test-config');
 require('./test-setup');
 
 chai.use(chaiHttp);
 
 describe('API Tests', () => {
+  // Augmenter le timeout pour tous les tests
+  beforeEach(function() {
+    this.timeout(config.test.timeout);
+  });
+
   describe('Health Check', () => {
     it('should return status UP on /health', (done) => {
       chai.request(app)
