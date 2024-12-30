@@ -745,6 +745,8 @@ istioctl install --set profile=demo -y
 kubectl label namespace default istio-injection=enabled
 ```
 
+[📸 Voir la capture d'écran](./image/7-istio/istio-injection.png)
+
 ### 2️⃣ Vérification
 ```bash
 istioctl verify-install
@@ -760,7 +762,7 @@ Fichier: `userapi-virtualservice.yaml`
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: userapi
+  name: userapi-virtualservice
 spec:
   hosts:
   - "*"
@@ -769,13 +771,13 @@ spec:
   http:
   - route:
     - destination:
-        host: userapi
+        host: userapi-service
         subset: v1
-      weight: 90
+      weight: 50
     - destination:
-        host: userapi
+        host: userapi-service
         subset: v2
-      weight: 10
+      weight: 50
 ```
 
 #### 🎯 DestinationRule
@@ -784,12 +786,9 @@ Fichier: `userapi-destinationrule.yaml`
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: userapi
+  name: userapi-destinationrule
 spec:
-  host: userapi
-  trafficPolicy:
-    loadBalancer:
-      simple: ROUND_ROBIN
+  host: userapi-service
   subsets:
   - name: v1
     labels:
@@ -811,14 +810,12 @@ spec:
     istio: ingressgateway
   servers:
   - port:
-      number: 80
+      number: 3000
       name: http
       protocol: HTTP
     hosts:
     - "*"
 ```
-
-[🔧 Voir la capture d'écran de la configuration du Gateway](./image/7-istio/)
 
 #### 🔍 Vérification
 
@@ -826,16 +823,16 @@ spec:
 ```bash
 kubectl get svc -n istio-system
 ```
-
-[📸 Voir la capture d'écran des services Istio](./image/7-istio/)
+[📸 Voir la capture d'écran des services Istio](./image/7-istio/istio-running.png)
 
 #### 2️⃣ Vérifier la Configuration
 ```bash
-kubectl get virtualservices userapi -o yaml
-kubectl get destinationrules userapi -o yaml
+kubectl get gateway
+kubectl get destinationrules
+kubectl get virtualservices 
 ```
 
-[📸 Voir la capture d'écran des VirtualServices et DestinationRules](./image/7-istio/)
+[📸 Voir la capture d'écran des VirtualServices et DestinationRules](./image/7-istio/istio-check.png)
 
 #### 🧪 Test de l'Application
 
@@ -843,6 +840,7 @@ kubectl get destinationrules userapi -o yaml
 ```bash
 kubectl get svc -n istio-system
 ```
+[📸 Voir la capture d'écran de la vérification de l'installation](./image/7-istio/istio-getsvc.png)
 
 #### 2️⃣ Tester les Routes
 ```bash
