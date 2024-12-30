@@ -13,7 +13,7 @@ let redisClient = null;
 (async () => {
   try {
     redisClient = createClient({
-      url: `redis://${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || 6379}`,
+      url: `redis://${process.env.REDIS_HOST || 'redis-service.default.svc.cluster.local'}:${process.env.REDIS_PORT || 6379}`,
     });
 
     // Gestion des erreurs Redis
