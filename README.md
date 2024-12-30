@@ -737,15 +737,16 @@ kubectl delete -f userapi-deployment.yaml
 #### 🚀 Installation
 
 #### 1️⃣ Installation d'Istio
+> Cette commande installe Istio avec une configuration recommandée pour les tests
 ```bash
-# Télécharger et installer Istio
+# Télécharger et installer Istio avec le profil demo qui inclut tous les composants nécessaires
 istioctl install --set profile=demo -y
-
 ```
 
 [📸 Voir la capture d'écran de la vérification de l'installation](./image/7-istio/istio-install.png)
 
 ### 2️⃣ Injection automatique
+> Cette commande configure le namespace pour injecter automatiquement le proxy sidecar Envoy dans tous les pods
 ```bash
 # Activer l'injection automatique de sidecar Istio
 kubectl label namespace default istio-injection=enabled
@@ -756,7 +757,8 @@ kubectl label namespace default istio-injection=enabled
 #### ⚙️ Configuration du Routage
 
 #### 🔄 VirtualService
-Fichier: `userapi-virtualservice.yaml`
+> Le VirtualService définit les règles de routage pour le trafic entrant
+> Fichier: userapi-virtualservice.yaml
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -764,23 +766,24 @@ metadata:
   name: userapi-virtualservice
 spec:
   hosts:
-  - "*"
+  - "*"  # Accepte le trafic de tous les hôtes
   gateways:
-  - userapi-gateway
+  - userapi-gateway  # Utilise notre gateway personnalisé
   http:
   - route:
     - destination:
         host: userapi-service
         subset: v1
-      weight: 50
+      weight: 50  # 50% du trafic vers v1
     - destination:
         host: userapi-service
         subset: v2
-      weight: 50
+      weight: 50  # 50% du trafic vers v2
 ```
 
 #### 🎯 DestinationRule
-Fichier: `userapi-destinationrule.yaml`
+> La DestinationRule définit les sous-ensembles de services disponibles
+> Fichier: userapi-destinationrule.yaml
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
@@ -789,16 +792,17 @@ metadata:
 spec:
   host: userapi-service
   subsets:
-  - name: v1
+  - name: v1  # Définit le sous-ensemble v1
     labels:
       version: v1
-  - name: v2
+  - name: v2  # Définit le sous-ensemble v2
     labels:
       version: v2
 ```
 
 #### 🚪 Gateway
-Fichier: `userapi-gateway.yaml`
+> Le Gateway contrôle le trafic entrant dans le mesh
+> Fichier: userapi-gateway.yaml
 ```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
@@ -806,25 +810,27 @@ metadata:
   name: userapi-gateway
 spec:
   selector:
-    istio: ingressgateway
+    istio: ingressgateway  # Utilise l'Istio ingress gateway
   servers:
   - port:
-      number: 3000
+      number: 3000  # Port d'écoute
       name: http
       protocol: HTTP
     hosts:
-    - "*"
+    - "*"  # Accepte le trafic de tous les hôtes
 ```
 
 #### 🔍 Vérification
 
 #### 1️⃣ Vérifier les Services Istio
+> Vérifie que tous les services Istio sont en cours d'exécution
 ```bash
 kubectl get svc -n istio-system
 ```
 [📸 Voir la capture d'écran des services Istio](./image/7-istio/istio-running.png)
 
 #### 2️⃣ Vérifier la Configuration
+> Vérifie que toutes nos configurations ont été appliquées correctement
 ```bash
 kubectl get gateway
 kubectl get destinationrules
@@ -836,14 +842,17 @@ kubectl get virtualservices
 #### 🧪 Test de l'Application
 
 #### 1️⃣ Obtenir l'IP du Gateway
+> Récupère l'adresse IP du gateway Istio pour pouvoir accéder à l'application
 ```bash
 kubectl get svc -n istio-system
 ```
 [📸 Voir la capture d'écran de la vérification de l'installation](./image/7-istio/istio-getsvc.png)
 
 #### 2️⃣ Tester les Routes
+> Test le routage vers la version 1 de l'application
 ```bash
 curl http://127.0.0.1/v1
+> Test le routage vers la version 2 de l'application
 curl http://127.0.0.1/v2
 ```
 
