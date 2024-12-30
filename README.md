@@ -11,7 +11,7 @@
    - [Docker](#4-docker)
    - [Docker Compose](#5-docker-compose)
    - [Kubernetes](#6-kubernetes)
-   - [Service Mesh avec Istio](#-7-service-mesh-avec-istio)
+   - [Service Mesh avec Istio](#7-service-mesh-avec-istio)
 5. [Structure du Projet](#-structure-du-projet)
 6. [Liens](#-liens)
 7. [Auteurs](#-auteurs)
@@ -732,7 +732,7 @@ kubectl delete -f userapi-deployment.yaml
 
 ---
 
-### 🌐 7. Service Mesh avec Istio
+### 7. Service Mesh avec Istio
 
 #### 🚀 Installation
 
@@ -743,7 +743,7 @@ istioctl install --set profile=demo -y
 
 ```
 
-[📸 Voir la capture d'écran](./image/7-istio/istio-install.png)
+[📸 Voir la capture d'écran de la vérification de l'installation](./image/7-istio/istio-install.png)
 
 ### 2️⃣ Injection automatique
 ```bash
@@ -751,7 +751,7 @@ istioctl install --set profile=demo -y
 kubectl label namespace default istio-injection=enabled
 ```
 
-[📸 Voir la capture d'écran de la vérification de l'installation](./image/7-istio/istio-injection.png)
+[📸 Voir la capture d'écran](./image/7-istio/istio-injection.png)
 
 #### ⚙️ Configuration du Routage
 
