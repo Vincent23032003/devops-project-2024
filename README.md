@@ -741,18 +741,17 @@ kubectl delete -f userapi-deployment.yaml
 # Télécharger et installer Istio
 istioctl install --set profile=demo -y
 
+```
+
+[📸 Voir la capture d'écran](./image/7-istio/istio-install.png)
+
+### 2️⃣ Injection automatique
+```bash
 # Activer l'injection automatique de sidecar Istio
 kubectl label namespace default istio-injection=enabled
 ```
 
-[📸 Voir la capture d'écran](./image/7-istio/istio-injection.png)
-
-### 2️⃣ Vérification
-```bash
-istioctl verify-install
-```
-
-[📸 Voir la capture d'écran de la vérification de l'installation](./image/7-istio/istio-install.png)
+[📸 Voir la capture d'écran de la vérification de l'installation](./image/7-istio/istio-injection.png)
 
 #### ⚙️ Configuration du Routage
 
