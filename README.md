@@ -11,7 +11,7 @@
    - [Docker](#4-docker)
    - [Docker Compose](#5-docker-compose)
    - [Kubernetes](#6-kubernetes)
-   - [Service Mesh avec Istio](#7-service-mesh-avec-istio)
+   - [Service Mesh avec Istio](#-7-service-mesh-avec-istio)
 5. [Structure du Projet](#-structure-du-projet)
 6. [Liens](#-liens)
 7. [Auteurs](#-auteurs)
