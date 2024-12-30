@@ -8,4 +8,4 @@ spec:
   ports:
     - protocol: TCP
       port: 3000
-  clusterIP: None
+      targetPort: 8080

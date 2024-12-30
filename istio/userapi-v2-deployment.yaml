@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: userapi-v2
+  labels:
+    app: userapi
+    version: v2
 spec:
   replicas: 1
   selector:
@@ -16,6 +19,6 @@ spec:
     spec:
       containers:
       - name: userapi
-        image: quentinc123/userapi:v2
+        image: quentinc123/userapi:v2 
         ports:
-        - containerPort: 3000
+        - containerPort: 8080
