@@ -852,7 +852,9 @@ kubectl get svc -n istio-system
 > Test le routage vers la version 1 de l'application
 ```bash
 curl http://127.0.0.1/v1
+```
 > Test le routage vers la version 2 de l'application
+```bash
 curl http://127.0.0.1/v2
 ```
 
