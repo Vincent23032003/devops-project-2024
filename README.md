@@ -825,7 +825,7 @@ docker push quentinc123/userapi:v2
 # Vérification des déploiements
 kubectl get deployments
 ```
-![État des déploiements](./image/7-istio/deployment-status.png)
+![État des déploiements](./image/7-istio/deployement.png)
 
 #### 4. 🔀 Configuration du Routage
 

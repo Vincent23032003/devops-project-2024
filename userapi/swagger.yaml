@@ -18,13 +18,41 @@ tags:
     description: Opérations sur les utilisateurs
   - name: Health
     description: Vérification de l'état du service
+  - name: Documentation
+    description: Documentation de l'API
 
 paths:
+  /:
+    get:
+      tags:
+        - Documentation
+      summary: Page d'accueil
+      description: Affiche les informations de base de l'API
+      responses:
+        '200':
+          description: Informations de base
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Welcome to UserAPI"
+                  environment:
+                    type: string
+                    example: "development"
+                  redis_status:
+                    type: string
+                    example: "connected"
+                    enum: ["connected", "disabled"]
+
   /users:
     post:
       tags:
         - Users
       summary: Créer un nouvel utilisateur
+      description: Crée un nouvel utilisateur avec les informations fournies
       requestBody:
         required: true
         content:
@@ -37,11 +65,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User created"
+                  user:
+                    $ref: '#/components/schemas/User'
         '400':
           description: Données invalides
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /users/{id}:
     get:
@@ -52,6 +94,7 @@ paths:
         - name: id
           in: path
           required: true
+          description: Identifiant unique de l'utilisateur
           schema:
             type: string
       responses:
@@ -63,8 +106,16 @@ paths:
                 $ref: '#/components/schemas/User'
         '404':
           description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
     put:
       tags:
@@ -74,6 +125,7 @@ paths:
         - name: id
           in: path
           required: true
+          description: Identifiant unique de l'utilisateur à mettre à jour
           schema:
             type: string
       requestBody:
@@ -81,18 +133,38 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserInput'
+              $ref: '#/components/schemas/UserUpdateInput'
       responses:
         '200':
           description: Utilisateur mis à jour avec succès
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User updated"
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Aucun champ à mettre à jour fourni
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '404':
           description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
     delete:
       tags:
@@ -102,21 +174,39 @@ paths:
         - name: id
           in: path
           required: true
+          description: Identifiant unique de l'utilisateur à supprimer
           schema:
             type: string
       responses:
-        '204':
+        '200':
           description: Utilisateur supprimé avec succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User with id {id} deleted"
         '404':
           description: Utilisateur non trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           description: Erreur serveur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /health:
     get:
       tags:
         - Health
       summary: Vérifier l'état de l'API
+      description: Vérifie l'état de l'API
       responses:
         '200':
           description: Service en bon état
@@ -128,43 +218,70 @@ paths:
                   status:
                     type: string
                     example: "UP"
-                  redis:
-                    type: string
-                    example: "Connected"
         '500':
           description: Service indisponible
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 components:
   schemas:
     UserInput:
       type: object
       required:
-        - username
+        - id
+        - name
         - email
       properties:
-        username:
+        id:
           type: string
-          example: "john_doe"
+          example: "123"
+          description: Identifiant unique de l'utilisateur
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          maxLength: 100
+          example: "john@example.com"
+
+    UserUpdateInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          maxLength: 100
+          example: "john@example.com"
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "123"
+          description: Identifiant unique de l'utilisateur
+        name:
+          type: string
+          example: "John Doe"
         email:
           type: string
           format: email
           example: "john@example.com"
-        firstname:
-          type: string
-          example: "John"
-        lastname:
-          type: string
-          example: "Doe"
 
-    User:
-      allOf:
-        - $ref: '#/components/schemas/UserInput'
-        - type: object
-          properties:
-            id:
-              type: string
-              example: "user:123"
-            created_at:
-              type: string
-              format: date-time
-              example: "2024-12-30T12:00:00Z"
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Message d'erreur
+          example: "Internal server error"
