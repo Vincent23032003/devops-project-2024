@@ -843,8 +843,8 @@ kubectl get svc -n istio-system
 
 #### 2️⃣ Tester les Routes
 ```bash
-curl http://<external-ip>/v1
-curl http://<external-ip>/v2
+curl http://127.0.0.1/v1
+curl http://127.0.0.1/v2
 ```
 
 [🖼️ Voir la capture d'écran du test de l'application](./image/7-istio/)
