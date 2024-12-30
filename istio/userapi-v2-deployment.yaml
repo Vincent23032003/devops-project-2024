@@ -18,4 +18,4 @@ spec:
       - name: userapi
         image: quentinc123/userapi:v2
         ports:
-        - containerPort: 8080
+        - containerPort: 3000
