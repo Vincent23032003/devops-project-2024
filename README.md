@@ -882,9 +882,9 @@ http://localhost:$PORT_SERVICE
 KIALI:
 ```bash
 kubectl port-forward svc/kiali -n istio-system 20001
-http://localhost:20001
-[KIALI](http://localhost:20001)
 ```
+Une fois la commande exécutée, le service sera accessible localement à l'adresse suivante:[KIALI](http://localhost:20001)
+
 ![kiala](./image/7-istio/kiali%20dash.png)
 
 Organisation de l'app:
