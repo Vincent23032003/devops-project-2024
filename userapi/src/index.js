@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Chargement et configuration de Swagger
-const swaggerPath = path.resolve(process.cwd(), 'userapi/swagger.yaml');
+const swaggerPath = path.join(__dirname, '..', 'swagger.yaml');
 const swaggerDocument = YAML.load(swaggerPath);
 
 // Servir le fichier swagger.yaml statiquement
