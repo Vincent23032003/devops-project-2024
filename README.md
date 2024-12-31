@@ -881,12 +881,12 @@ Organisation de l'app:
 ![kialitraficgraph](./image/7-istio/kiali.png)
 
 >Dans l'image ci-dessous, nous pouvons constater que le trafic réseau est réparti de manière asymétrique entre les services : **90 %** du trafic est dirigé vers un service principal, tandis que **10 %** est dirigé vers un service secondaire.  
-Cette répartition confirme que les fichiers de configuration ont été appliqués avec succès. En effet, le code a correctement mis en œuvre la règle de gestion du trafic spécifiant une séparation à **90/10**.  
+Cette répartition confirme que les fichiers de configuration ont été appliqués avec succès. En effet, le code a correctement mis en œuvre la règle de gestion du trafic spécifiant une séparation à **90/10**.
+
 ![kialatwitching](./image/7-istio/kiali%20twitching.png)
 
 
 Trafic:
-![kialitraffic](./image/7-istio/kiali%20twitching.png)
 ![kialitraffic2](./image/7-istio/kiali%20traffic%20graph%20default-2.png)
 ![kialitraffic3](./image/7-istio/kiali%20traffic%20graph%20default.png)
 
@@ -900,6 +900,9 @@ Grafana dashboard:
 ![grafana](./image/7-istio/grafana.png)
 
 Trafic:
+>Dans le graphique ci-dessous, nous pouvons observer la répartition du trafic réseau entre les services : **90 %** du trafic est dirigé vers le service principal, tandis que **10 %** est affecté au service secondaire.  
+Ce graphique confirme que la configuration a été correctement appliquée, avec la règle de gestion du trafic définie pour une répartition **90/10**. L'outil **Grafana** permet de visualiser cette distribution en temps réel, ce qui montre que les paramètres sont fonctionnels et que la gestion du trafic est bien en place.
+
 ![grafana2](./image/7-istio/grafana%20trafic%2090-10.png)
 
 PROMETHEUS:
