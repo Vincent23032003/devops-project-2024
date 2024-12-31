@@ -606,34 +606,17 @@ Une série de tests vérifie le bon fonctionnement de l'ensemble du système :
 
 ## 6. Kubernetes
 
-Notre déploiement Kubernetes est conçu pour offrir une haute disponibilité et une scalabilité automatique de notre application. Nous utilisons Minikube pour le développement local, ce qui nous permet de tester notre configuration Kubernetes dans un environnement isolé.
+Kubernetes (K8s) est une plateforme open-source pour l'orchestration de conteneurs, permettant de déployer, gérer, et mettre à l'échelle des applications conteneurisées de manière automatisée. Il offre des fonctionnalités essentielles telles que :  
+- **Haute disponibilité** grâce à la gestion des pods et au redémarrage automatique en cas de panne.  
+- **Scalabilité automatique** pour répondre aux variations de la charge.  
+- **Gestion du réseau et des services** pour connecter et exposer les applications de manière sécurisée.  
 
-Notre configuration Kubernetes utilise plusieurs composants :
-```yaml
-# userapi-deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: userapi-deployment
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: userapi
-  template:
-    metadata:
-      labels:
-        app: userapi
-    spec:
-      containers:
-      - name: userapi-container
-        image: quentinc123/userapi:latest
-        ports:
-        - containerPort: 3000
-        env:
-        - name: REDIS_HOST
-          value: redis-service
-```
+### Ce que nous utilisons dans cette partie :  
+- **Minikube** : Une solution légère pour simuler un cluster Kubernetes en environnement local.  
+- **Déploiements** : Pour gérer et déployer les applications conteneurisées (par exemple, `userapi` et `Redis`).  
+- **Persistent Volumes (PV)** et **Persistent Volume Claims (PVC)** : Pour assurer la persistance des données.  
+- **Services** : Pour exposer les applications et gérer leur accessibilité.  
+- **Monitoring** : Avec les outils  **Kiali** et **Grafana** pour surveiller l'état du cluster.  
 
 #### 1. 🚀 Démarrage du Cluster
 
@@ -721,33 +704,40 @@ kubectl port-forward service/userapi-service 3000:3000
 
 #### 6. 🔄 Maintenance
 
-Les opérations de maintenance sont automatisées :
-- Rolling updates sans interruption
-- Scaling automatique
-- Backup des données
-- Monitoring des ressources
+La maintenance des ressources dans le cluster Kubernetes est un élément clé pour garantir la disponibilité et la performance des applications. Les opérations suivantes sont automatisées pour minimiser les interruptions et maximiser l'efficacité :  
 
+- **Rolling Updates** : Mises à jour progressives des déploiements sans interruption de service.  
+- **Scaling Automatique** : Ajustement dynamique du nombre de pods en fonction de la charge.  
+- **Backup des Données** : Sauvegardes régulières des volumes persistants pour éviter toute perte de données.  
+- **Monitoring des Ressources** : Surveillance continue pour détecter et résoudre rapidement les anomalies.  
+
+ 
+>Pour redémarrer les déploiements de manière contrôlée (rolling restart), utilisez les commandes suivantes :  
 ```bash
-# Redémarrage des déploiements
-kubectl rollout restart deployment/userapi-deployment
-kubectl rollout restart deployment/redis-deployment
+# Redémarrage des déploiements pour appliquer des changements ou corriger des problèmes
+kubectl rollout restart deployment/userapi-deployment  # Redémarre le déploiement UserAPI
+kubectl rollout restart deployment/redis-deployment   # Redémarre le déploiement Redis
 ```
 ![Redémarrage des déploiements](./image/6-K8/deployment-restart.png)
 
-#### 7. 🧹 Nettoyage
+#### 7. 🧹 Nettoyage des Ressources
 
-Le nettoyage des ressources est systématique et complet :
-- Suppression des déploiements
-- Nettoyage des volumes
-- Libération des ressources
-- Archivage des logs
+Une fois les tests ou le déploiement terminé, il est important de procéder à un nettoyage systématique pour libérer les ressources utilisées par le cluster. Cette étape inclut :  
+- La suppression des déploiements.  
+- Le nettoyage des volumes persistants (Persistent Volumes et Persistent Volume Claims).  
+- La libération des ressources liées aux pods, services, et autres objets Kubernetes.  
+- L'archivage des logs pour une consultation ultérieure, si nécessaire.  
 
+
+>Les commandes suivantes permettent de supprimer efficacement les ressources déployées :  
 ```bash
-# Suppression des ressources
-kubectl delete -f redis-pv.yaml
-kubectl delete -f redis-pvc.yaml
-kubectl delete -f redis-deployment.yaml
-kubectl delete -f userapi-deployment.yaml
+# Suppression des Persistent Volumes (PV) et Persistent Volume Claims (PVC)
+kubectl delete -f redis-pv.yaml  # Supprime le PV défini dans redis-pv.yaml
+kubectl delete -f redis-pvc.yaml  # Supprime le PVC associé au volume Redis
+
+# Suppression des déploiements d'applications
+kubectl delete -f redis-deployment.yaml  # Supprime le déploiement Redis
+kubectl delete -f userapi-deployment.yaml  # Supprime le déploiement UserAPI
 ```
 ![Nettoyage des ressources](./image/6-K8/cleanup.png)
 
@@ -849,7 +839,6 @@ Pour installer les outils tels que **Grafana**, **Prometheus**, **Kiali**, et d'
 ```bash
 kubectl apply -f /addons/
 ```
-![addons](./image/7-istio/istio-getsvc.png)
 Cette commande déploie l'ensemble des addons nécessaires pour la supervision et la gestion du cluster Kubernetes.
 
 
@@ -869,7 +858,7 @@ kubectl get services -n istio-system
 ![services istio](./image/7-istio/services-istio.png)
 Cette commande affiche la liste des services déployés dans le namespace istio-system, ainsi que leurs informations, notamment leurs adresses IP et ports
 
-#### Accéder aux Services d'Istio
+#### 6. Accéder aux Services d'Istio
 Pour accéder aux services déployés (comme **Grafana**, **Prometheus**, **Kiali**, etc.), vous pouvez utiliser la commande suivante pour configurer un port-forward :  
 ```bash
 kubectl port-forward svc/$SERVICE -n istio-system $PORT_SERVICE
@@ -883,14 +872,18 @@ KIALI:
 ```bash
 kubectl port-forward svc/kiali -n istio-system 20001
 ```
-Une fois la commande exécutée, le service sera accessible localement à l'adresse suivante:[KIALI](http://localhost:20001)
+Une fois la commande exécutée, le service sera accessible localement à l'adresse suivante: [KIALI](http://localhost:20001)
 
 ![kiala](./image/7-istio/kiali%20dash.png)
 
 Organisation de l'app:
 ![kialipods](./image/7-istio/pods-kiali.png)
 ![kialitraficgraph](./image/7-istio/kiali.png)
+
+>Dans l'image ci-dessous, nous pouvons constater que le trafic réseau est réparti de manière asymétrique entre les services : **90 %** du trafic est dirigé vers un service principal, tandis que **10 %** est dirigé vers un service secondaire.  
+Cette répartition confirme que les fichiers de configuration ont été appliqués avec succès. En effet, le code a correctement mis en œuvre la règle de gestion du trafic spécifiant une séparation à **90/10**.  
 ![kialatwitching](./image/7-istio/kiali%20twitching.png)
+
 
 Trafic:
 ![kialitraffic](./image/7-istio/kiali%20twitching.png)
@@ -900,8 +893,9 @@ Trafic:
 GRAFANA:
 ```bash
 kubectl port-forward svc/grafana -n istio-system 3000
-http://localhost:3000
 ```
+Une fois la commande exécutée, le service sera accessible localement à l'adresse suivante: [GRAFANA](http://localhost:3000)
+
 Grafana dashboard:
 ![grafana](./image/7-istio/grafana.png)
 
@@ -911,8 +905,9 @@ Trafic:
 PROMETHEUS:
 ```bash
 kubectl port-forward svc/prometheus -n istio-system 9090
-http://localhost:9090
 ```
+Une fois la commande exécutée, le service sera accessible localement à l'adresse suivante: [PROMETHEUS](http://localhost:9090)
+
 
 ## 🔗 Liens Utiles
 
