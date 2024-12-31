@@ -11,7 +11,7 @@
    - [Docker](#4-docker)
    - [Docker Compose](#5-docker-compose)
    - [Kubernetes](#6-kubernetes)
-   - [Service Mesh avec Istio](#7-service-mesh-avec-istio)
+   - [Service Mesh avec Istio](#-7-service-mesh-avec-istio)
 5. [Structure du Projet](#-structure-du-projet)
 6. [Liens](#-liens)
 7. [Auteurs](#-auteurs)
@@ -88,7 +88,7 @@ Nous avons conçu le processus d'installation pour être aussi simple et automat
 
 ## 🛠️ Les 7 Composants
 
-### 1. Application Web
+## 1. Application Web
 
 Notre API REST est construite avec Node.js et offre une gestion complète des utilisateurs. Elle utilise Redis comme base de données pour assurer des performances optimales et une mise en cache efficace.
 
@@ -208,7 +208,7 @@ npm test
 
 ![Résultats des tests](./image/1-app-web/npm_test.png)
 
-### 2. CI/CD Pipeline
+## 2. CI/CD Pipeline
 
 Notre pipeline d'intégration et de déploiement continu est implémenté avec GitHub Actions, offrant une automatisation complète du processus de test et de déploiement.
 
@@ -311,7 +311,7 @@ git push heroku main
 ```
 ![Déploiement réussi sur Heroku](./image/2-ci-cd/heroku_deployment.png)
 
-### 3. Infrastructure as Code
+## 3. Infrastructure as Code
 
 Notre infrastructure est entièrement gérée par code, utilisant Vagrant pour la virtualisation et Ansible pour le provisioning automatisé. Cette approche garantit la reproductibilité et la fiabilité de notre environnement de développement.
 
@@ -440,7 +440,7 @@ curl http://localhost:3000/health
 ```
 ![Accès à l'application via port forwarding](./image/3-iac/app_acces.png)
 
-### 4. Docker
+## 4. Docker
 
 Notre application est conteneurisée avec Docker pour garantir la portabilité et la cohérence entre les environnements. Nous utilisons une image Node.js officielle comme base pour assurer stabilité et sécurité.
 
@@ -521,7 +521,7 @@ curl http://localhost:3000/health
 ```
 ![Vérification du fonctionnement](./image/4-docker-image/runValide.png)
 
-### 5. Docker Compose
+## 5. Docker Compose
 
 Docker Compose orchestre notre environnement multi-conteneurs, gérant à la fois notre API Node.js et notre base de données Redis. Cette configuration assure une isolation parfaite des services tout en facilitant leur communication.
 
@@ -604,7 +604,7 @@ Une série de tests vérifie le bon fonctionnement de l'ensemble du système :
 > Confirmation que l'utilisateur a été correctement créé
 ![Vérification de la création](./image/5-docker-compose/verificationUserCreation.png)
 
-### 6. Kubernetes
+## 6. Kubernetes
 
 Notre déploiement Kubernetes est conçu pour offrir une haute disponibilité et une scalabilité automatique de notre application. Nous utilisons Minikube pour le développement local, ce qui nous permet de tester notre configuration Kubernetes dans un environnement isolé.
 
@@ -751,7 +751,7 @@ kubectl delete -f userapi-deployment.yaml
 ```
 ![Nettoyage des ressources](./image/6-K8/cleanup.png)
 
-### 7. Service Mesh avec Istio
+## 7. Service Mesh avec Istio
 
 Dans l'étape précédente, nous avons déployé notre application dans un cluster Kubernetes (K8S). Cependant, s'arrêter à cette étape reviendrait à passer à côté des fonctionnalités avancées offertes par Kubernetes. Dans cette partie du projet, nous allons nous appuyer sur le travail réalisé précédemment et l'amener à un niveau supérieur.
 
