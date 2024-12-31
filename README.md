@@ -11,7 +11,7 @@
    - [Docker](#4-docker)
    - [Docker Compose](#5-docker-compose)
    - [Kubernetes](#6-kubernetes)
-   - [Service Mesh avec Istio](#-7-service-mesh-avec-istio)
+   - [Service Mesh avec Istio](#7-service-mesh-avec-istio)
 5. [Structure du Projet](#-structure-du-projet)
 6. [Liens](#-liens)
 7. [Auteurs](#-auteurs)
@@ -844,30 +844,38 @@ kubectl get destinationrules
 
 #### 5. 🔍 Deployement addons dans le cluster:
 
-Vérification de l'état des services Istio :
+Pour installer les outils tels que **Grafana**, **Prometheus**, **Kiali**, et d'autres composants, exécutez la commande suivante :
 
 ```bash
 kubectl apply -f /addons/
 ```
 ![addons](./image/7-istio/istio-getsvc.png)
+Cette commande déploie l'ensemble des addons nécessaires pour la supervision et la gestion du cluster Kubernetes.
 
+
+Tous les composants d'Istio, y compris les addons tels que **Grafana**, **Prometheus**, **Kiali**, et d'autres, s'exécutent sous forme de pods dans le namespace `istio-system`.  
+Pour vérifier l'état de ces pods, utilisez la commande suivante :  
 ```bash
-# Vérification des pods et services
 kubectl get pods -n istio-system
 ```
 ![Pods istio](./image/7-istio/pods-istio-system.png)
 
-Plusieur services ont été crér pour accéder a tout les ADDONS de istio. On peut verifie leur état avec la commande suivante:
 
+Plusieurs services ont été créés pour permettre l'accès à tous les addons d'Istio, tels que **Grafana**, **Prometheus**, **Kiali**, etc.  
+Pour vérifier l'état de ces services, exécutez la commande suivante :  
 ```bash
 kubectl get services -n istio-system
 ```
 ![services istio](./image/7-istio/services-istio.png)
+Cette commande affiche la liste des services déployés dans le namespace istio-system, ainsi que leurs informations, notamment leurs adresses IP et ports
 
-Maintenant pour acceder aux services:
-> avec la commande suivante :
+#### Accéder aux Services d'Istio
+Pour accéder aux services déployés (comme **Grafana**, **Prometheus**, **Kiali**, etc.), vous pouvez utiliser la commande suivante pour configurer un port-forward :  
 ```bash
 kubectl port-forward svc/$SERVICE -n istio-system $PORT_SERVICE
+```
+>Une fois la commande exécutée, le service sera accessible localement à l'adresse suivante :
+```bash
 http://localhost:$PORT_SERVICE
 ```
 
@@ -875,15 +883,16 @@ KIALI:
 ```bash
 kubectl port-forward svc/kiali -n istio-system 20001
 http://localhost:20001
+[KIALI](http://localhost:20001)
 ```
 ![kiala](./image/7-istio/kiali%20dash.png)
 
-> Organisation de l'app:
+Organisation de l'app:
 ![kialipods](./image/7-istio/pods-kiali.png)
 ![kialitraficgraph](./image/7-istio/kiali.png)
 ![kialatwitching](./image/7-istio/kiali%20twitching.png)
 
->Trafic:
+Trafic:
 ![kialitraffic](./image/7-istio/kiali%20twitching.png)
 ![kialitraffic2](./image/7-istio/kiali%20traffic%20graph%20default-2.png)
 ![kialitraffic3](./image/7-istio/kiali%20traffic%20graph%20default.png)
@@ -893,10 +902,10 @@ GRAFANA:
 kubectl port-forward svc/grafana -n istio-system 3000
 http://localhost:3000
 ```
->Grafana dashboard:
+Grafana dashboard:
 ![grafana](./image/7-istio/grafana.png)
 
->Trafic:
+Trafic:
 ![grafana2](./image/7-istio/grafana%20trafic%2090-10.png)
 
 PROMETHEUS:
