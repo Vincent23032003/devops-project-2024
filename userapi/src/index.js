@@ -30,7 +30,7 @@ let redisClient = null;
 (async () => {
   try {
     redisClient = createClient({
-      url: process.env.REDIS_URL || 'redis://localhost:6379',
+      url: process.env.REDISCLOUD_URL || process.env.REDIS_URL || 'redis://localhost:6379',
     });
 
     // Gestion des erreurs Redis
