@@ -11,8 +11,17 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Chargement et configuration de Swagger
-const swaggerDocument = YAML.load(path.join(__dirname, '../swagger.yaml'));
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+const swaggerDocument = YAML.load(path.join(__dirname, '..', 'swagger.yaml'));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
+  swaggerOptions: {
+    url: '/swagger.yaml'  // Chemin pour accéder au fichier swagger
+  }
+}));
+
+// Servir le fichier swagger.yaml statiquement
+app.get('/swagger.yaml', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'swagger.yaml'));
+});
 
 // Création et configuration du client Redis
 let redisClient = null;
