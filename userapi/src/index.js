@@ -3,12 +3,14 @@ const { createClient } = require('redis');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const path = require('path');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware pour analyser les requêtes JSON
+// Middleware pour analyser les requêtes JSON et CORS
 app.use(express.json());
+app.use(cors());
 
 // Chargement et configuration de Swagger
 const swaggerPath = path.join(__dirname, '..', 'swagger.yaml');

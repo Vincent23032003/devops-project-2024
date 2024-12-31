@@ -22,6 +22,20 @@ tags:
     description: Documentation de l'API
 
 paths:
+  /api-docs:
+    get:
+      tags:
+        - Documentation
+      summary: Documentation Swagger
+      description: Interface Swagger UI pour explorer l'API
+      responses:
+        '200':
+          description: Documentation Swagger UI
+          content:
+            text/html:
+              schema:
+                type: string
+
   /:
     get:
       tags:
@@ -46,6 +60,30 @@ paths:
                     type: string
                     example: "connected"
                     enum: ["connected", "disabled"]
+
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Vérifier l'état de l'API
+      description: Vérifie l'état de l'API
+      responses:
+        '200':
+          description: Service en bon état
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "UP"
+        '500':
+          description: Service indisponible
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /users:
     post:
@@ -196,30 +234,6 @@ paths:
                 $ref: '#/components/schemas/Error'
         '500':
           description: Erreur serveur
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-
-  /health:
-    get:
-      tags:
-        - Health
-      summary: Vérifier l'état de l'API
-      description: Vérifie l'état de l'API
-      responses:
-        '200':
-          description: Service en bon état
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "UP"
-        '500':
-          description: Service indisponible
           content:
             application/json:
               schema:
