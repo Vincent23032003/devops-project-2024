@@ -753,39 +753,28 @@ kubectl delete -f userapi-deployment.yaml
 
 ### 7. Service Mesh avec Istio
 
-Istio améliore notre architecture Kubernetes en ajoutant des fonctionnalités avancées de gestion du trafic, de sécurité et d'observabilité. Cette couche de service mesh nous permet de contrôler finement les communications entre nos services.
+Dans l'étape précédente, nous avons déployé notre application dans un cluster Kubernetes (K8S). Cependant, s'arrêter à cette étape reviendrait à passer à côté des fonctionnalités avancées offertes par Kubernetes. Dans cette partie du projet, nous allons nous appuyer sur le travail réalisé précédemment et l'amener à un niveau supérieur.
 
-Notre configuration Istio comprend :
-```yaml
-# userapi-virtualservice.yaml
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: userapi-virtualservice
-spec:
-  hosts:
-  - "*"
-  gateways:
-  - userapi-gateway
-  http:
-  - route:
-    - destination:
-        host: userapi-service
-        subset: v1
-      weight: 90
-    - destination:
-        host: userapi-service
-        subset: v2
-      weight: 10
-```
+Avec Istio, nous allons implémenter un service mesh dans notre application. De plus, grâce à Prometheus et Grafana, nous serons en mesure de surveiller le cluster Kubernetes en temps réel et de configurer des alertes en cas de défaillance.
 
 #### 1. 🛠️ Installation d'Istio
 
-Installation d'Istio avec le profil demo qui inclut tous les composants nécessaires :
+Installation d'Istio qui inclut tous les composants nécessaires :
+
+```bash
+minikube delete
+minikube start --cpus 6 --memory 8192
+```
+
+```bash
+kubectl get ns
+kubectl get pod -n istio-system
+```
+![Cluster vide](./image/7-istio/empty-k8.png)
 
 ```bash
 # Installation d'Istio
-istioctl install --set profile=demo -y
+istioctl install
 ```
 ![Installation d'Istio](./image/7-istio/istio-install.png)
 
@@ -816,16 +805,29 @@ kubectl get namespace -L istio-injection
 Déploiement de nos services avec Istio :
 
 ```bash
-# Construction et push de l'image v2
-docker push quentinc123/userapi:v2
+ kubectl apply -f services.yaml
 ```
-![Construction de la v2](./image/7-istio/build-v2.png)
+![Services](./image/7-istio/services.png)
 
 ```bash
-# Vérification des déploiements
-kubectl get deployments
+ kubectl apply -f deployment.yaml
 ```
-![État des déploiements](./image/7-istio/deployement.png)
+![dep](./image/7-istio/deployment.png)
+
+```bash
+ kubectl apply -f redis-config.yaml
+```
+![Redis](./image/7-istio/redis.png)
+
+```bash
+ kubectl get pdos
+```
+![Redis](./image/7-istio/getpods.png)
+
+```bash
+ kubectl get svc
+```
+![Redis](./image/7-istio/getsvc.png)
 
 #### 4. 🔀 Configuration du Routage
 

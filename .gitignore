@@ -154,3 +154,5 @@ inventory.ini
 # OS
 .DS_Store
 Thumbs.db
+
+istio/addons
