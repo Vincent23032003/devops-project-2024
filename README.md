@@ -831,6 +831,7 @@ kubectl get destinationrules
 ```
 ![check all](./image/7-istio/istio-check.png)
 
+Maintenant, notre application est déployée dans un cluster géré par Istio. Dans les étapes suivantes, nous allons intégrer des addons au cluster afin d'exploiter pleinement toutes les fonctionnalités d'Istio.
 
 #### 5. 🔍 Deployement addons dans le cluster:
 
@@ -857,6 +858,8 @@ kubectl get services -n istio-system
 ```
 ![services istio](./image/7-istio/services-istio.png)
 Cette commande affiche la liste des services déployés dans le namespace istio-system, ainsi que leurs informations, notamment leurs adresses IP et ports
+
+
 
 #### 6. Accéder aux Services d'Istio
 Pour accéder aux services déployés (comme **Grafana**, **Prometheus**, **Kiali**, etc.), vous pouvez utiliser la commande suivante pour configurer un port-forward :  
