@@ -822,12 +822,12 @@ Déploiement de nos services avec Istio :
 ```bash
  kubectl get pdos
 ```
-![Redis](./image/7-istio/getpods.png)
+![pods](./image/7-istio/getpods.png)
 
 ```bash
  kubectl get svc
 ```
-![Redis](./image/7-istio/getsvc.png)
+![services](./image/7-istio/getsvc.png)
 
 #### 4. 🔀 Configuration du Routage
 
@@ -839,57 +839,70 @@ kubectl get gateways
 kubectl get virtualservices
 kubectl get destinationrules
 ```
-![Vérification des règles](./image/7-istio/istio-check.png)
+![check all](./image/7-istio/istio-check.png)
 
-```bash
-# Application du VirtualService
-kubectl apply -f virtualservice.yaml
-```
-![Configuration du VirtualService](./image/7-istio/virtualservice.png)
 
-#### 5. 🔍 Vérification des Services
+#### 5. 🔍 Deployement addons dans le cluster:
 
 Vérification de l'état des services Istio :
 
 ```bash
-# Vérification des services Istio
-kubectl get svc -n istio-system
+kubectl apply -f /addons/
 ```
-![Services Istio](./image/7-istio/istio-getsvc.png)
+![addons](./image/7-istio/istio-getsvc.png)
 
 ```bash
 # Vérification des pods et services
-kubectl get pods,svc
+kubectl get pods -n istio-system
 ```
-![Pods et services](./image/7-istio/pods-service.png)
+![Pods istio](./image/7-istio/pods-istio-system.png)
 
-Notre configuration comprend :
-- Un gateway Istio pour l'accès externe
-- Des règles de routage pour la version v1 et v2
-- Une configuration de load balancing
-- Des règles de destination pour le trafic
+Plusieur services ont été crér pour accéder a tout les ADDONS de istio. On peut verifie leur état avec la commande suivante:
 
-```yaml
-# Configuration du VirtualService
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: userapi
-spec:
-  hosts:
-  - "*"
-  gateways:
-  - userapi-gateway
-  http:
-  - route:
-    - destination:
-        host: userapi
-        subset: v1
-      weight: 90
-    - destination:
-        host: userapi
-        subset: v2
-      weight: 10
+```bash
+kubectl get services -n istio-system
+```
+![services istio](./image/7-istio/services-istio.png)
+
+Maintenant pour acceder aux services:
+> avec la commande suivante :
+```bash
+kubectl port-forward svc/$SERVICE -n istio-system $PORT_SERVICE
+http://localhost:$PORT_SERVICE
+```
+
+KIALI:
+```bash
+kubectl port-forward svc/kiali -n istio-system 20001
+http://localhost:20001
+```
+![kiala](./image/7-istio/kiali%20dash.png)
+
+> Organisation de l'app:
+![kialipods](./image/7-istio/pods-kiali.png)
+![kialitraficgraph](./image/7-istio/kiali.png)
+![kialatwitching](./image/7-istio/kiali%20twitching.png)
+
+>Trafic:
+![kialitraffic](./image/7-istio/kiali%20twitching.png)
+![kialitraffic2](./image/7-istio/kiali%20traffic%20graph%20default-2.png)
+![kialitraffic3](./image/7-istio/kiali%20traffic%20graph%20default.png)
+
+GRAFANA:
+```bash
+kubectl port-forward svc/grafana -n istio-system 3000
+http://localhost:3000
+```
+>Grafana dashboard:
+![grafana](./image/7-istio/grafana.png)
+
+>Trafic:
+![grafana2](./image/7-istio/grafana%20trafic%2090-10.png)
+
+PROMETHEUS:
+```bash
+kubectl port-forward svc/prometheus -n istio-system 9090
+http://localhost:9090
 ```
 
 ## 🔗 Liens Utiles
